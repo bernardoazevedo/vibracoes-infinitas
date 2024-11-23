@@ -71,7 +71,7 @@ if(isset($_POST)){
         //verifica se o nome de usuário já é usado por outra conta
         $nomeUsuario = limpaInput($connect, $nomeUsuario);
         $sql = "SELECT nomeUsuario 
-                FROM Usuarios 
+                FROM Usuario 
                 WHERE nomeUsuario = '$nomeUsuario'";
         $resultado = mysqli_query($connect, $sql);
 
@@ -87,13 +87,10 @@ if(isset($_POST)){
                 $nomeUsuario = limpaInput($connect, $nomeUsuario);
                 $senhaCriptografada = password_hash($senha, PASSWORD_DEFAULT);
 
-                $sql = "INSERT INTO Usuarios (nome, nomeUsuario, senha)
+                $sql = "INSERT INTO Usuario (nome, nomeUsuario, senha)
                         VALUES ('$nome', '$nomeUsuario', '$senhaCriptografada')";
                 $resultado = mysqli_query($connect, $sql);
-echo '<pre>';
-echo '<hr>tete: '; //print_r(tete);
-echo '</pre>';
-die();
+
                 mysqli_close($connect);
                 header('Location: ../login.php');
                 die();

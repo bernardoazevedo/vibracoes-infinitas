@@ -12,21 +12,20 @@ require_once('db-connect.php');
 session_start();
 
 if(isset($_POST)){
-    $email = $_POST['email'];
+    $nomeUsuario = $_POST['nomeUsuario'];
     $senha = $_POST['senha'];
 
     //se algum campo não foi preenchido, exibe o erro
-    if(empty($email) || empty($senha)){
-        $_SESSION['mensagem-login'] = 'ERRO: Todos os campos devem ser preenchidos';
+    if(empty($nomeUsuario) || empty($senha)){
+        $_SESSION['mensagem'] = 'ERRO: Todos os campos devem ser preenchidos';
         mysqli_close($connect);
-        header('Location: ../entrar.php');
+        header('Location: ../login.php');
     }
     else{
         //verifica se o e-mail está cadastrado
-        $email = limpaInput($connect, $email);
         $sql = "SELECT * 
-                FROM Usuarios 
-                WHERE email = '$email'";
+                FROM Usuario 
+                WHERE NomeUsuario = '$nomeUsuario'";
         $resultado = mysqli_query($connect, $sql);
 
         if(mysqli_num_rows($resultado) > 0){
@@ -34,28 +33,27 @@ if(isset($_POST)){
             $dados = mysqli_fetch_array($resultado);
 
             //verifica se a senha está correta
-            if(password_verify($senha, $dados['senha'])){
+            if(password_verify($senha, $dados['Senha'])){
                 //salva na sessão os dados do usuário,
                 //que ele está logado e sua última atividade
                 $_SESSION['logado'] = true;
-                $_SESSION['id_usuario'] = $dados['id'];
-                $_SESSION['nome_usuario'] = $dados['nome'];
-                $_SESSION['sobrenome_usuario'] = $dados['sobrenome'];
-                $_SESSION['email_usuario'] = $dados['email'];
+                $_SESSION['id'] = $dados['id'];
+                $_SESSION['nome'] = $dados['nome'];
+                $_SESSION['nomeUsuario'] = $dados['nomeUsuario'];
                 $_SESSION['ultima-atividade'] = time();
                 mysqli_close($connect);
-                header('Location: ../usuarios.php');
+                header('Location: ../index.php');
             }
             else{
-                $_SESSION['mensagem-login'] = 'ERRO: E-mail ou senha inválido';
+                $_SESSION['mensagem'] = 'ERRO: E-mail ou senha inválido';
                 mysqli_close($connect);
-                header('Location: ../entrar.php');
+                header('Location: ../login.php');
             }
         }
         else{
-            $_SESSION['mensagem-login'] = 'ERRO: E-mail ou senha inválido';
+            $_SESSION['mensagem'] = 'ERRO: E-mail ou senha inválido';
             mysqli_close($connect);
-            header('Location: ../entrar.php');
+            header('Location: ../login.php');
         }
     }
 }

@@ -1,3 +1,7 @@
+<?php 
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,16 +24,22 @@
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
       <a href="index2.html" class="h1"><b>Vibrações Infinitas</b></a>
+      <p>
+        <?php
+        print_r($_SESSION['mensagem']);
+        unset($_SESSION['mensagem']);
+        ?>
+      </p>
     </div>
     <div class="card-body">
       <p class="login-box-msg">Entre na sua conta</p>
 
       <form action="actions/login.php" method="post">
         <div class="input-group mb-3">
-          <input id="email" name="email" type="email" class="form-control" placeholder="Email">
+          <input id="nomeUsuario" name="nomeUsuario" type="text" class="form-control" placeholder="Nome de usuário">
           <div class="input-group-append">
             <div class="input-group-text">
-              <span class="fas fa-envelope"></span>
+              <span class="fas fa-user"></span>
             </div>
           </div>
         </div>
