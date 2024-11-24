@@ -1,15 +1,5 @@
 <?php
 
-function getPublic($caminho){
-    $raiz = realpath('.');
-    return "$raiz/public/$caminho";
-}
-
-function getSrc($caminho){
-    $raiz = realpath('.');
-    return "$raiz/Src/$caminho";
-}
-
 $request = $_SERVER['REQUEST_URI'];
 
 switch ($request) {
