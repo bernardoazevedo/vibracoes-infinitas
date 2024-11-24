@@ -1,5 +1,20 @@
 <?php 
 session_start();
+
+
+$connect = mysqli_connect('localhost', 'admin', 'admin', 'vibracoes_infinitas');
+
+$sql = "SELECT * 
+        FROM Usuario"; 
+$resultado = mysqli_query($connect, $sql);
+
+if(mysqli_num_rows($resultado) > 0){
+    //converte o resultado para um array associativo
+	$musicos = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+}
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -35,6 +50,47 @@ session_start();
                             <input class="form-control" type="file" name="musica" id="musica">
                         </div>
                     </div>
+                    <div class="mt-2">
+                        <button type="submit" class="btn btn-primary">Enviar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card col-8">
+            <div class="card-header">
+                Criar projeto
+            </div>
+            <div class="card-body">
+                <form id="form-upload"  action="src/actions/criarProjeto.php" method="post" enctype="multipart/form-data">
+                    <div class="row g-3">
+                        <div class="col">
+                            <div>
+                                <label for="nomeProjeto">Nome do projeto</label>
+                                <input class="form-control" type="text" name="nomeProjeto" id="nomeProjeto" placeholder="Digite o nome do projeto">
+                            </div>
+
+                            <div class="mt-2">
+                                <label for="descricaoProjeto">Descrição do projeto</label>
+                                <textarea class="form-control" name="descricaoProjeto" id="descricaoProjeto" placeholder="Digite a descrição do projeto"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <label for="musicos">Adicionar músicos</label>
+                            <div>
+                                <?php foreach($musicos as $musico): ?>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="musicos[]" value="<?= $musico['ID'] ?>" id="<?= $musico['ID'] ?>">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            <?= $musico['Nome'] ?>
+                                        </label>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="mt-2">
                         <button type="submit" class="btn btn-primary">Enviar</button>
                     </div>

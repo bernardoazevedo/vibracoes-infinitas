@@ -22,7 +22,7 @@ if(isset($_POST)){
         header('Location: ../../login');
     }
     else{
-        //verifica se o e-mail está cadastrado
+        //verifica se o nome de usuário está cadastrado
         $sql = "SELECT * 
                 FROM Usuario 
                 WHERE NomeUsuario = '$nomeUsuario'";
@@ -36,22 +36,23 @@ if(isset($_POST)){
             if(password_verify($senha, $dados['Senha'])){
                 //salva na sessão os dados do usuário,
                 //que ele está logado e sua última atividade
-                $_SESSION['logado'] = true;
-                $_SESSION['id'] = $dados['id'];
-                $_SESSION['nome'] = $dados['nome'];
-                $_SESSION['nomeUsuario'] = $dados['nomeUsuario'];
-                $_SESSION['ultima-atividade'] = time();
+                $_SESSION['usuario']['logado'] = true;
+                $_SESSION['usuario']['id'] = $dados['ID'];
+                $_SESSION['usuario']['nome'] = $dados['Nome'];
+                $_SESSION['usuario']['nomeUsuario'] = $dados['NomeUsuario'];
+                $_SESSION['usuario']['fotoPerfil'] = $dados['FotoPerfil'];
+                $_SESSION['usuario']['ultima-atividade'] = time();
                 mysqli_close($connect);
                 header('Location: ../../home');
             }
             else{
-                $_SESSION['mensagem'] = 'ERRO: E-mail ou senha inválido';
+                $_SESSION['mensagem'] = 'ERRO: Nome de usuário ou senha inválido';
                 mysqli_close($connect);
                 header('Location: ../../login');
             }
         }
         else{
-            $_SESSION['mensagem'] = 'ERRO: E-mail ou senha inválido';
+            $_SESSION['mensagem'] = 'ERRO: Nome de usuário ou senha inválido';
             mysqli_close($connect);
             header('Location: ../../login');
         }
