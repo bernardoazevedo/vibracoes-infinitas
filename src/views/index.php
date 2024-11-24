@@ -14,6 +14,16 @@ function listaMusicas($pasta)
 	return $musicas;
 }
 
+function getPublic($caminho){
+    $raiz = realpath('.');
+    return "$raiz/public/$caminho";
+}
+
+function getSrc($caminho){
+    $raiz = realpath('.');
+    return "$raiz/Src/$caminho";
+}
+
 
 $pasta = '/musicas';
 
