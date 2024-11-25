@@ -2,8 +2,8 @@
 
 session_start();
 
-require_once('controleSessao.php');
-require_once('db-connect.php');
+require_once(__DIR__.'/controleSessao.php');
+require_once(__DIR__.'/db-connect.php');
 
 function formatoValido($extensao){
     $formatosValidos = [
@@ -74,8 +74,6 @@ $sql = "INSERT INTO Musica(Titulo, Genero, Artista, NomeArquivo)
 if ($stmt = mysqli_prepare($connect, $sql)) {
     mysqli_stmt_bind_param($stmt, "ssis", $novoNome, $genero, $usuarioAtivoId, $novoNome);
     mysqli_stmt_execute($stmt);
-    mysqli_stmt_bind_result($stmt, $result);
-    mysqli_stmt_fetch($stmt);
     mysqli_stmt_close($stmt);
 }
 
