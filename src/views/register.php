@@ -10,21 +10,21 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Criar conta | Vibrações Infinitas</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="public/css/adminlte.min.css">
+    <link rel="stylesheet" href="../../public/css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="../../public/css/adminlte.min.css">
+    <link rel="stylesheet" href="../../public/css/style.css">
 </head>
 
 <body class="hold-transition register-page">
     <div class="register-box">
         <div class="card card-outline card-primary">
             <div class="card-header text-center">
-                <a href="index2.html" class="h1"><b>Vibrações Infinitas</b></a>
+                <a href="register.php" class="h1"><b>Vibrações Infinitas</b></a>
             </div>
             <div class="card-body">
                 <p class="login-box-msg">Crie sua conta</p>
 
-                <form action="src/actions/register.php" method="post">
+                <form action="../actions/register.php" method="post">
                     <div class="input-group mb-3">
                         <input id="nome" name="nome" type="text" class="form-control" placeholder="Nome completo">
                         <div class="input-group-append">
@@ -68,39 +68,34 @@ session_start();
                     </div>
                 </form>
 
-                <a href="login" class="text-center">Já tenho conta</a>
+                <a href="login.php" class="text-center">Já tenho conta</a>
             </div>
             <!-- /.form-box -->
         </div><!-- /.card -->
 
-        <?php if(isset($_SESSION['mensagem'])): ?>
-        <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-            <?php
-                print_r($_SESSION['mensagem']);
-                unset($_SESSION['mensagem']);
-                ?>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+        <!-- Exibe as mensagens passadas pela Session -->
+        <?php if(isset($_SESSION['mensagens'])): ?>
+            <?php foreach($_SESSION['mensagens'] as $key => $mensagem): ?>
+                <div class="alert alert-<?= $mensagem['tipo'] ?> alert-dismissible fade show mt-3" role="alert">
+                    <span>
+                        <?= $mensagem['texto']; ?>
+                    </span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <?php unset($_SESSION['mensagens'][$key]) ?>
+            <?php endforeach; ?>
         <?php endif; ?>
     </div>
     <!-- /.register-box -->
 
     <script src="https://kit.fontawesome.com/df3ed30ad5.js" crossorigin="anonymous"></script>
     <!-- jQuery -->
-    <script src="public/js/jquery-3.7.1.min.js"></script>
+    <script src="../../public/js/jquery-3.7.1.min.js"></script>
     <!-- Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-    </script>
-    <script>
-        $('.close').each(function() {
-            $(this).click(function(){
-                $(this).parent().addClass('d-none');
-            });
-        });
-    </script>
+    <script src="../../public/js/bootstrap/bootstrap.min.js"></script>
+    <script src="../../public/js/index.js"></script>
 </body>
 
 </html>

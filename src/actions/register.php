@@ -8,11 +8,9 @@ function verificaNome($string){
     $string = trim($string);
 
     if(empty($string)){
-        $_SESSION['mensagem'] = 'ERRO: Nome não preenchido';
         return false;
     }
     if(contemNumero($string)){
-        $_SESSION['mensagem'] = 'ERRO: O nome não pode conter números';
         return false;
     }
     return $string;
@@ -22,7 +20,6 @@ function verificaEmail($email){
     $email = trim($email);
 
     if(empty($email)){
-        $_SESSION['mensagem'] = 'ERRO: E-mail não preenchido';
         return false;
     }
 
@@ -30,13 +27,11 @@ function verificaEmail($email){
         return $email;
     }
 
-    $_SESSION['mensagem'] = 'ERRO: E-mail inválido';
     return false;
 }
 
 function verificaSenha($senha){
     if(strlen($senha) < 8){
-        $_SESSION['mensagem'] = 'ERRO: A senha deve possuir ao menos 8 caracteres';
         return false;
     }
 
@@ -63,8 +58,11 @@ if(isset($_POST)){
 
     //se algum campo não foi preenchido, exibe o erro
     if(empty($nome) || empty($nomeUsuario) || empty($senha) || empty($confirmaSenha)){
+        $mensagem['tipo'] = 'danger';
+        $mensagem['texto'] = 'Você deve preencher todos os campos';
+        $_SESSION['mensagens'][] = $mensagem;
         mysqli_close($connect);
-        header('Location: ../../register');
+        header('Location: ../views/register.php');
         die();
     }
     else{  
@@ -76,9 +74,11 @@ if(isset($_POST)){
         $resultado = mysqli_query($connect, $sql);
 
         if(mysqli_num_rows($resultado) > 0){
-            $_SESSION['mensagem'] = 'ERRO: Esse nome de usuário já é usado em outra conta';
+            $mensagem['tipo'] = 'danger';
+            $mensagem['texto'] = 'Esse nome de usuário já é usado em outra conta';
+            $_SESSION['mensagens'][] = $mensagem;
             mysqli_close($connect);
-            header('Location: ../../register');
+            header('Location: ../views/register.php');
             die();
         }
         else{
@@ -92,13 +92,15 @@ if(isset($_POST)){
                 $resultado = mysqli_query($connect, $sql);
 
                 mysqli_close($connect);
-                header('Location: ../../login');
+                header('Location: ../views/login.php');
                 die();
             }
             else{
-                $_SESSION['mensagem'] = 'ERRO: As senhas não conferem';
+                $mensagem['tipo'] = 'danger';
+                $mensagem['texto'] = 'As senhas não conferem';
+                $_SESSION['mensagens'][] = $mensagem;
                 mysqli_close($connect);
-                header('Location: ../../register');
+                header('Location: ../views/register.php');
                 die();
             }
         }

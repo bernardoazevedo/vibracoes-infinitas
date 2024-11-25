@@ -1,5 +1,9 @@
 <?php 
 
+session_start();
+
+require_once('db-connect.php');
+
 function limpaInput($mysqli_connect, $string){
     $sql_escaped = mysqli_escape_string($mysqli_connect, $string);
     $sql_html_escaped = htmlspecialchars($sql_escaped);
@@ -7,9 +11,6 @@ function limpaInput($mysqli_connect, $string){
     return $sql_html_escaped;
 }
 
-require_once('db-connect.php');
-
-session_start();
 
 if(isset($_POST)){
     $nomeUsuario = $_POST['nomeUsuario'];
@@ -17,9 +18,11 @@ if(isset($_POST)){
 
     //se algum campo não foi preenchido, exibe o erro
     if(empty($nomeUsuario) || empty($senha)){
-        $_SESSION['mensagem'] = 'ERRO: Todos os campos devem ser preenchidos';
+        $mensagem['tipo'] = 'danger';
+        $mensagem['texto'] = 'Todos os campos devem ser preenchidos';
+        $_SESSION['mensagens'][] = $mensagem;
         mysqli_close($connect);
-        header('Location: ../../login');
+        header('Location: ../views/login.php');
     }
     else{
         //verifica se o nome de usuário está cadastrado
@@ -43,18 +46,22 @@ if(isset($_POST)){
                 $_SESSION['usuario']['fotoPerfil'] = $dados['FotoPerfil'];
                 $_SESSION['usuario']['ultima-atividade'] = time();
                 mysqli_close($connect);
-                header('Location: ../../home');
+                header('Location: ../views/home.php');
             }
             else{
-                $_SESSION['mensagem'] = 'ERRO: Nome de usuário ou senha inválido';
+                $mensagem['tipo'] = 'danger';
+                $mensagem['texto'] = 'Nome de usuário ou senha inválido';
+                $_SESSION['mensagens'][] = $mensagem;
                 mysqli_close($connect);
-                header('Location: ../../login');
+                header('Location: ../views/login.php');
             }
         }
         else{
-            $_SESSION['mensagem'] = 'ERRO: Nome de usuário ou senha inválido';
+            $mensagem['tipo'] = 'danger';
+            $mensagem['texto'] = 'Nome de usuário ou senha inválido';
+            $_SESSION['mensagens'][] = $mensagem;
             mysqli_close($connect);
-            header('Location: ../../login');
+            header('Location: ../views/login.php');
         }
     }
 }

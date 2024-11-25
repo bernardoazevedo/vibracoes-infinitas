@@ -2,8 +2,9 @@
 
 session_start();
 
-function listaMusicas($pasta)
-{
+require_once('../actions/controleSessao.php');
+
+function listaMusicas($pasta){
 	// retorna um array com as musicas
 	$musicas = scandir($pasta);
 
@@ -21,7 +22,7 @@ function getPublic($caminho){
 
 function getSrc($caminho){
     $raiz = realpath('.');
-    return "$raiz/Src/$caminho";
+    return "$raiz/src/$caminho";
 }
 
 
