@@ -2,9 +2,9 @@
 
 session_start();
 
-require_once('../actions/controleSessao.php');
-require_once('funcoes.php');
-require_once('db-connect.php');
+require_once(__DIR__.'/controleSessao.php');
+require_once(__DIR__.'/funcoes.php');
+require_once(__DIR__.'/db-connect.php');
 
 $nomeProjeto = $_POST['nomeProjeto'];
 $descricaoProjeto = $_POST['descricaoProjeto'];
@@ -28,15 +28,11 @@ $sql = "INSERT INTO ProjetoMusical(Nome, Descricao, UsuarioCriadorID)
 $result = mysqli_query($connect, $sql);
 $projetoId = mysqli_insert_id($connect);
 
-if($result){
-    registraAtividade($connect, $usuarioAtivoId, "Usuário $usuarioAtivoId criou um novo projeto chamado $nomeProjeto");
-}
-
 // se o projeto tiver sido criado com sucesso, cadastra os membros
 if($result){
-    
-    if(count($musicos)){
-        
+    registraAtividade($connect, $usuarioAtivoId, "Usuário $usuarioAtivoId criou um novo projeto chamado $nomeProjeto");
+
+    if($musicos){
         // constrói a query para inserir os membros do projeto
         $sql = "INSERT INTO MembroProjeto(ProjetoID, UsuarioID)
                 VALUES";

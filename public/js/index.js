@@ -10,7 +10,7 @@ $('.btn-conectar').each(function() {
         let conexaoId = $(this).val();
         $(this).addClass('disabled');
         $.ajax({
-            url: '/vibracoes-infinitas/src/actions/criarConexao.php',
+            url: '/src/actions/criarConexao.php',
             type: 'POST',
             data:{
                 conexaoId: conexaoId
@@ -35,7 +35,7 @@ $('.btn-desconectar').each(function() {
         let conexaoId = $(this).val();
         $(this).addClass('disabled');
         $.ajax({
-            url: '/vibracoes-infinitas/src/actions/excluirConexao.php',
+            url: '/src/actions/excluirConexao.php',
             type: 'POST',
             data:{
                 conexaoId: conexaoId

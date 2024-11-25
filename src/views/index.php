@@ -2,7 +2,7 @@
 
 session_start();
 
-require_once('../actions/controleSessao.php');
+// require_once('../actions/controleSessao.php');
 
 function listaMusicas($pasta){
 	// retorna um array com as musicas
@@ -15,20 +15,10 @@ function listaMusicas($pasta){
 	return $musicas;
 }
 
-function getPublic($caminho){
-    $raiz = realpath('.');
-    return "$raiz/public/$caminho";
-}
 
-function getSrc($caminho){
-    $raiz = realpath('.');
-    return "$raiz/src/$caminho";
-}
+$pasta = __DIR__.'/../../public/musicas';
 
-
-$pasta = '/musicas';
-
-$musicas = listaMusicas(getPublic($pasta));
+$musicas = listaMusicas($pasta);
 
 echo '<pre>';
 echo '<hr>$musicas: '; print_r($musicas);

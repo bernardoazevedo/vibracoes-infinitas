@@ -36,9 +36,9 @@ mysqli_close($connect);
         <?php if(isset($_SESSION['mensagens'])): ?>
             <?php foreach($_SESSION['mensagens'] as $key => $mensagem): ?>
                 <div class="alert alert-<?= $mensagem['tipo'] ?> alert-dismissible fade show mt-3" role="alert">
-                    <p>
+                    <span>
                         <?= $mensagem['texto']; ?>
-                    </p>
+                    </span>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

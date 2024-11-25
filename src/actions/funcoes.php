@@ -13,7 +13,7 @@ function getConexoes($connect, $idMusico){
         $conexoes = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
     }
 
-    return $conexoes;
+    return $conexoes ?? false;
 }
 
 function getMusicos($connect){
@@ -94,8 +94,6 @@ function registraAtividade($connect, $usuario_id, $descricao){
     if ($stmt = mysqli_prepare($connect, $sql)) {
         mysqli_stmt_bind_param($stmt, "is", $usuario_id, $descricao);
         mysqli_stmt_execute($stmt);
-        mysqli_stmt_bind_result($stmt, $result);
-        mysqli_stmt_fetch($stmt);
         mysqli_stmt_close($stmt);
     }
 
@@ -118,26 +116,31 @@ function getAtividades($connect){
 
 function getAtividadesDasConexoes($connect, $usuario_id){
     $conexoes = getConexoes($connect, $usuario_id);
-    
-    foreach($conexoes as $key => $conexao){
-        $idConexoes[] = $conexao['ID'];
-    }
-    
-    $sql = "SELECT *
-            FROM FeedAtividades fa
-            WHERE fa.UsuarioID IN (";
-    foreach($idConexoes as $idConexao){
-        $sql .= "$idConexao,";
-    }
-    $sql = substr($sql, 0, (strlen($sql)-1));
-    $sql .= ")";
 
-    $resultado = mysqli_query($connect, $sql);
-
-    if(mysqli_num_rows($resultado) > 0){
-        //converte o resultado para um array associativo
-        $atividades = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+    if($conexoes){
+        foreach($conexoes as $key => $conexao){
+            $idConexoes[] = $conexao['ID'];
+        }
+        
+        $sql = "SELECT *
+        FROM FeedAtividades fa
+        WHERE fa.UsuarioID IN (";
+        foreach($idConexoes as $idConexao){
+            $sql .= "$idConexao,";
+        }
+        $sql = substr($sql, 0, (strlen($sql)-1));
+        $sql .= ")";
+        
+        $resultado = mysqli_query($connect, $sql);
+        
+        if(mysqli_num_rows($resultado) > 0){
+            //converte o resultado para um array associativo
+            $atividades = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+        }
+       
+        return $atividades;
     }
-
-    return $atividades;
+    else{
+        return false;
+    }
 }

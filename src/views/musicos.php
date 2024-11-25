@@ -1,9 +1,9 @@
 <?php 
 session_start();
 
-require_once('../actions/controleSessao.php');
-require_once('../actions/funcoes.php');
-require_once('../actions/db-connect.php');
+require_once(__DIR__.'/../actions/controleSessao.php');
+require_once(__DIR__.'/../actions/funcoes.php');
+require_once(__DIR__.'/../actions/db-connect.php');
 
 $usuarioAtivo = $_SESSION['usuario'];
 $usuarioAtivoId = $usuarioAtivo['id'];
@@ -33,9 +33,9 @@ mysqli_close($connect);
         <?php if(isset($_SESSION['mensagens'])): ?>
             <?php foreach($_SESSION['mensagens'] as $key => $mensagem): ?>
                 <div class="alert alert-<?= $mensagem['tipo'] ?> alert-dismissible fade show mt-3" role="alert">
-                    <p>
+                    <span>
                         <?= $mensagem['texto']; ?>
-                    </p>
+                    </span>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -85,7 +85,7 @@ mysqli_close($connect);
                 Suas conexões
             </div>
             <div class="card-body">
-                <?php if(count($conexoes)): ?>
+                <?php if($conexoes): ?>
                     <table class="table table-sm table-hover">
                         <thead>
                             <tr>

@@ -1,9 +1,9 @@
 <?php 
 session_start();
 
-require_once('../actions/controleSessao.php');
-require_once('../actions/funcoes.php');
-require_once('../actions/db-connect.php');
+require_once(__DIR__.'/../actions/controleSessao.php');
+require_once(__DIR__.'/../actions/funcoes.php');
+require_once(__DIR__.'/../actions/db-connect.php');
 
 $usuarioAtivo = $_SESSION['usuario'];
 $usuarioAtivoId = $usuarioAtivo['id'];
@@ -26,7 +26,7 @@ mysqli_close($connect);
     <link rel="stylesheet" href="../../public/css/style.css">
 </head>
 <body>
-    <?php require_once('layout/navbar.php'); ?>
+    <?php require_once(__DIR__.'/layout/navbar.php'); ?>
 
     <main class="container">
         <!-- Exibe as mensagens passadas pela Session -->
@@ -44,7 +44,7 @@ mysqli_close($connect);
             <?php endforeach; ?>
         <?php endif; ?>
 
-        <?php require_once('layout/enviarMusica.php') ?>
+        <?php require_once(__DIR__.'/layout/enviarMusica.php') ?>
 
         <h3 class="mt-4">Atividades</h3>
         <?php if(count($atividades)): ?>
