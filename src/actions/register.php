@@ -46,6 +46,42 @@ function limpaInput($mysqli_connect, $string){
 }
 
 
+function formatoValido($extensao){
+    $formatosValidos = [
+        'jpg',
+        'jpeg',
+        'png'
+    ];
+
+    //verifica se o formato do arquivo é permitido
+    return in_array($extensao, $formatosValidos);
+}
+
+function uploadFoto($nome, $nomeTemporario, $pasta){
+    $extensao = pathinfo($nome, PATHINFO_EXTENSION);
+
+    $arquivos = scandir($pasta);
+    //se já existe um arquivo com esse nome, adiciona (1) ao fim do nome
+    if(in_array($nome, $arquivos)){
+        $nome = str_replace('.'.$extensao, '', $nome);
+        $novoNome = $nome.'(1).'.$extensao;
+    }
+    //se não existe, o nome continua o mesmo
+    else{
+        $novoNome = $nome;
+    }
+
+    //tenta mover o arquivo para a pasta
+    if(move_uploaded_file($nomeTemporario, $pasta.$novoNome)){
+        return $novoNome;
+    }
+    else{
+        return false;
+    }
+}
+
+
+
 require_once('db-connect.php');
 
 session_start();
@@ -53,11 +89,27 @@ session_start();
 if(isset($_POST)){
     $nome = verificaNome($_POST['nome']);
     $nomeUsuario = verificaNome($_POST['nomeUsuario']);
+    $descricao = $_POST['descricao'];
     $senha = verificaSenha($_POST['senha']);
     $confirmaSenha = verificaSenha($_POST['confirma-senha']);
+    
+    $foto = $_FILES['fotoPerfil'];
+    $extensaoFoto = pathinfo($foto['name'], PATHINFO_EXTENSION);
+    $nomeTempArquivo = $foto['tmp_name'];
+    $novoNome = uniqid().".$extensaoFoto";
+
+    //verifica se o formato da foto é aceito
+    if(!formatoValido($extensaoFoto)){
+        $mensagem['tipo'] = 'danger';
+        $mensagem['texto'] = "Formato de arquivo ($extensaoFoto) inválido";
+        $_SESSION['mensagens'][] = $mensagem;
+        mysqli_close($connect);
+        header('Location: ../views/register.php');
+        die();
+    }
 
     //se algum campo não foi preenchido, exibe o erro
-    if(empty($nome) || empty($nomeUsuario) || empty($senha) || empty($confirmaSenha)){
+    if(empty($nome) || empty($nomeUsuario) || empty($foto) || empty($descricao) || empty($senha) || empty($confirmaSenha)){
         $mensagem['tipo'] = 'danger';
         $mensagem['texto'] = 'Você deve preencher todos os campos';
         $_SESSION['mensagens'][] = $mensagem;
@@ -87,9 +139,21 @@ if(isset($_POST)){
                 $nomeUsuario = limpaInput($connect, $nomeUsuario);
                 $senhaCriptografada = password_hash($senha, PASSWORD_DEFAULT);
 
-                $sql = "INSERT INTO Usuario (nome, nomeUsuario, senha)
-                        VALUES ('$nome', '$nomeUsuario', '$senhaCriptografada')";
-                $resultado = mysqli_query($connect, $sql);
+                $nomeFoto = uploadFoto($novoNome, $nomeTempArquivo, '../../public/fotos/');
+
+                if(! $nomeFoto){
+                    $mensagem['tipo'] = 'danger';
+                    $mensagem['texto'] = "Não foi possível fazer o upload da foto";
+                    $_SESSION['mensagens'][] = $mensagem;
+                    
+                    mysqli_close($connect);
+                    header('Location: ../views/login.php');
+                    die();
+                }
+
+                $sql = "INSERT INTO Usuario (Nome, NomeUsuario, Senha, FotoPerfil, Descricao)
+                        VALUES ('$nome', '$nomeUsuario', '$senhaCriptografada', '$nomeFoto', '$descricao')";
+                mysqli_query($connect, $sql);
 
                 mysqli_close($connect);
                 header('Location: ../views/login.php');

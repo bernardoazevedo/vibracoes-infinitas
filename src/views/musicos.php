@@ -8,8 +8,9 @@ require_once(__DIR__.'/../actions/db-connect.php');
 $usuarioAtivo = $_SESSION['usuario'];
 $usuarioAtivoId = $usuarioAtivo['id'];
 
-$conexoes = getConexoes($connect, $usuarioAtivoId);
-$musicos = getMusicos($connect);
+$conexoes = getConexoes($usuarioAtivoId);
+$musicos = getMusicos();
+$musicosConexoes = getMusicosConexoes($usuarioAtivoId);
 
 mysqli_close($connect);
 ?>
@@ -44,41 +45,7 @@ mysqli_close($connect);
             <?php endforeach; ?>
         <?php endif; ?>
 
-        <div class="card col-8">
-            <div class="card-header">
-                Músicos cadastrados
-            </div>
-            <div class="card-body">
-                <?php if(count($musicos)): ?>
-                    <table class="table table-sm table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">Foto de perfil</th>
-                                <th scope="col">Nome</th>
-                                <th scope="col">Nome de usuário</th>
-                                <th scope="col">Descrição</th>
-                                <th scope="col">Ação</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach($musicos as $musico): ?>
-                            <tr>
-                                <td><?= $musico['FotoPerfil'] ?></td>
-                                <td><?= $musico['Nome'] ?></td>
-                                <td><?= $musico['NomeUsuario'] ?></td>
-                                <td><?= $musico['Descricao'] ?></td>
-                                <td>
-                                    <button class="btn btn-outline-primary btn-sm btn-conectar" value="<?= $musico['ID'] ?>">Conectar</button>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                <?php else: ?>
-                    <p>Ainda não existe nenhum músico cadastrado</p>
-                <?php endif; ?>
-            </div>
-        </div>
+        <?php require_once('layout/exibeMusicos.php'); ?>
 
         <div class="card col-8">
             <div class="card-header">
@@ -99,7 +66,9 @@ mysqli_close($connect);
                         <tbody>
                             <?php foreach($conexoes as $conexao): ?>
                             <tr>
-                                <td><?= $conexao['FotoPerfil'] ?></td>
+                                <td>
+                                    <img src="../../public/fotos/<?= $conexao['FotoPerfil'] ?>" alt="" width="80px">
+                                </td>
                                 <td><?= $conexao['Nome'] ?></td>
                                 <td><?= $conexao['NomeUsuario'] ?></td>
                                 <td><?= $conexao['Descricao'] ?></td>

@@ -4,15 +4,11 @@ session_start();
 require_once('../actions/controleSessao.php');
 require_once('../actions/funcoes.php');
 
-$connect = mysqli_connect('localhost', 'admin', 'admin', 'vibracoes_infinitas');
-
 $usuarioAtivo = $_SESSION['usuario'];
 $usuarioAtivoId = $usuarioAtivo['id'];
 
-$projetos = getProjetosParticipantes($connect);
-$musicos = getMusicos($connect);
-
-mysqli_close($connect);
+$projetos = getProjetosParticipantes();
+$musicos = getMusicos();
 ?>
 
 <!DOCTYPE html>

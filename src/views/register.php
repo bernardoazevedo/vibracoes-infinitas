@@ -24,7 +24,8 @@ session_start();
             <div class="card-body">
                 <p class="login-box-msg">Crie sua conta</p>
 
-                <form action="../actions/register.php" method="post">
+                <form action="../actions/register.php" method="post" enctype="multipart/form-data">
+                    <label for="nome" class="mb-0">Nome</label>
                     <div class="input-group mb-3">
                         <input id="nome" name="nome" type="text" class="form-control" placeholder="Nome completo">
                         <div class="input-group-append">
@@ -33,6 +34,8 @@ session_start();
                             </div>
                         </div>
                     </div>
+
+                    <label for="nomeUsuario" class="mb-0">Nome de usuário</label>
                     <div class="input-group mb-3">
                         <input id="nomeUsuario" name="nomeUsuario" type="text" class="form-control"
                             placeholder="Nome de usuário">
@@ -42,6 +45,28 @@ session_start();
                             </div>
                         </div>
                     </div>
+
+                    <label for="fotoPerfil" class="mb-0">Foto de perfil</label>
+                    <div class="input-group mb-3">
+                        <input class="form-control" type="file" name="fotoPerfil" id="fotoPerfil" placeholder="Foto de perfil">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-image"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <label for="descricao" class="mb-0">Descrição do perfil</label>
+                    <div class="input-group mb-3">
+                        <textarea class="form-control" name="descricao" id="descricao" placeholder="Descrição do perfil"></textarea>
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <label for="senha" class="mb-0">Senha</label>
                     <div class="input-group mb-3">
                         <input id="senha" name="senha" type="password" class="form-control" placeholder="Senha">
                         <div class="input-group-append">
@@ -50,6 +75,8 @@ session_start();
                             </div>
                         </div>
                     </div>
+
+                    <label for="confirma-senha" class="mb-0">Confirme sua senha</label>
                     <div class="input-group mb-3">
                         <input id="confirma-senha" name="confirma-senha" type="password" class="form-control"
                             placeholder="Digite a senha novamente">
@@ -59,6 +86,7 @@ session_start();
                             </div>
                         </div>
                     </div>
+
                     <div class="row">
                         <!-- /.col -->
                         <div class="col-12">

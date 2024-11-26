@@ -10,6 +10,10 @@
                     <input class="form-control" type="text" name="nomeMusica" id="nomeMusica" placeholder="Digite o nome da música">
                 </div>
                 <div class="col">
+                    <label for="generoMusica">Gênero da música</label>
+                    <input class="form-control" type="text" name="generoMusica" id="generoMusica" placeholder="Digite o gênero da música">
+                </div>
+                <div class="col">
                     <label for="musica">Selecionar música</label>
                     <input class="form-control" type="file" name="musica" id="musica">
                 </div>

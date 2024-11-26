@@ -30,7 +30,7 @@ $projetoId = mysqli_insert_id($connect);
 
 // se o projeto tiver sido criado com sucesso, cadastra os membros
 if($result){
-    registraAtividade($connect, $usuarioAtivoId, "Usuário $usuarioAtivoId criou um novo projeto chamado $nomeProjeto");
+    registraAtividadeProjeto($usuarioAtivoId, $projetoId);
 
     if($musicos){
         // constrói a query para inserir os membros do projeto

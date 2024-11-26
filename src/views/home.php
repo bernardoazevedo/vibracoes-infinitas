@@ -8,10 +8,9 @@ require_once(__DIR__.'/../actions/db-connect.php');
 $usuarioAtivo = $_SESSION['usuario'];
 $usuarioAtivoId = $usuarioAtivo['id'];
 
-$musicos = getMusicos($connect);
-$atividades = getAtividadesDasConexoes($connect, $usuarioAtivoId);
+$musicos = getMusicos();
+$atividades = getAtividadesDasConexoes($usuarioAtivoId);
 
-mysqli_close($connect);
 ?>
 
 <!DOCTYPE html>
@@ -49,17 +48,57 @@ mysqli_close($connect);
         <h3 class="mt-4">Atividades</h3>
         <?php if(count($atividades)): ?>
             <?php foreach($atividades as $atividade): ?>
-                <div class="card col-8">
-                    <div class="card-body">
-                        <?= $atividade['AtividadeDescricao'] ?>
+                <?php 
+                    $dataAtividade = new DateTime($atividade['DataAtividade']);
+                    $data = $dataAtividade->format('H:i - d/m/Y');
+
+                    if($atividade['MusicaID']): 
+                        $musica = getMusicaPeloId($atividade['MusicaID']); 
+                        $usuario = getMusicoPeloId($atividade['UsuarioID']); ?>
+
+                        <div class="card col-8">
+                            <div class="card-header">
+                                <img src="../../public/fotos/<?= $usuario['FotoPerfil'] ?>" class="rounded-circle" alt="" width="40px" height="40px">
+                                <span class="ml-2"><?= $usuario['Nome'] ?> compartilhou uma nova música</span>
+                            </div>
+                            <div class="card-body">
+                                <audio controls>
+                                    <source src="../../public/musicas/<?=$musica['NomeArquivo']?>" type="audio/mpeg">
+                                </audio>
+                            </div>
+                            <div class="card-footer">
+                                <span class="fs-6"><?= $data ?></span>
+                            </div>
+                        </div>
+
+                <?php elseif($atividade['ProjetoID']): 
+                    $projeto = getProjetoPeloId($atividade['ProjetoID']);
+                    echo '<pre>';
+                    echo '<hr>$projeto: '; print_r($projeto);
+                    echo '</pre>';
+                    die();
+                    ?>
+                    <div class="card col-8">
+                        <div class="card-header">
+                            <?= $projeto['Nome'] ?>
+                        </div>
+                        <div class="card-body">
+                            <?= $projeto['Descricao'] ?>
+                        </div>
+
+                        <!-- exibe os participantes do projeto -->
+                        <div class="card-footer">
+                            <span>Membros do projeto</span>
+                            <ul class="list-group">
+                                <li class="list-group-item"><?= $projeto['criador_nome'] ?> - criador</li>
+                                <?php foreach($projeto['participantes'] as $participante): ?>
+                                    <li class="list-group-item"><?= $participante['Nome'] ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="card-footer">
-                        <?php 
-                          $dataAtividade = new DateTime($atividade['DataAtividade']);
-                          echo $dataAtividade->format('H:i - d/m/Y');
-                        ?>
-                    </div>
-                </div>
+
+                <?php endif; ?>
             <?php endforeach; ?>
         <?php else: ?>
             <div class="card col-8">
@@ -69,9 +108,6 @@ mysqli_close($connect);
             </div>
         <?php endif; ?>
 
-        <audio controls>
-            <source src="../../public/musicas/asd.mp3" type="audio/mp3">
-        </audio>
     </main>
 
     <script src="https://kit.fontawesome.com/df3ed30ad5.js" crossorigin="anonymous"></script>
