@@ -1,4 +1,4 @@
-<div class="card col-8">
+<div class="card">
     <div class="card-header">
         Enviar nova música
     </div>

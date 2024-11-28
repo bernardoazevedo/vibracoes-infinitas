@@ -2,9 +2,9 @@
 
 session_start();
 
-require_once(__DIR__.'/controleSessao.php');
-require_once(__DIR__.'/db-connect.php');
-require_once(__DIR__.'/funcoes.php');
+require_once('controleSessao.php');
+require_once('db-connect.php');
+require_once('funcoes.php');
 
 function formatoValido($extensao){
     $formatosValidos = [
@@ -20,7 +20,7 @@ function upload($novoNome, $nomeTemporario, $pasta){
     return move_uploaded_file($nomeTemporario, $pasta.$novoNome);
 }
 
-$pasta_destino = __DIR__."/../../public/musicas/";
+$pasta_destino = "../public/musicas/";
 
 $extensaoArquivo = pathinfo($_FILES['musica']['name'],PATHINFO_EXTENSION);
 $nomeMusica = trim($_POST['nomeMusica']);
@@ -102,4 +102,4 @@ if($uploadOk) {
 mysqli_close($connect);
 
 $_SESSION['mensagens'][] = $mensagem;
-header('Location: ../views/home.php');
+header('Location: ../index.php');

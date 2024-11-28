@@ -2,7 +2,7 @@
 
 session_start();
 
-require_once('../actions/controleSessao.php');
+require_once('controleSessao.php');
 require_once('db-connect.php');
 
 $conexaoId = $_POST['conexaoId'];

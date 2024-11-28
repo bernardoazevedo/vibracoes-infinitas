@@ -1,31 +1,33 @@
-<div class="card col-8">
+<div class="card">
     <div class="card-header">
-        Músicos cadastrados
+        Todos os músicos
     </div>
-    <div class="card-body">
+    <div class="card-body p-0">
         <?php if(count($musicosConexoes)): ?>
             <table class="table table-sm table-hover">
                 <thead>
-                    <tr>
-                        <th scope="col">Foto de perfil</th>
-                        <th scope="col">Nome</th>
-                        <th scope="col">Nome de usuário</th>
-                        <th scope="col">Descrição</th>
-                        <th scope="col">Ação</th>
-                    </tr>
+                    <td></td>
+                    <td>Nome de usuário</td>
+                    <td>Nome completo</td>
+                    <td>Descrição do perfil</td>
+                    <td></td>
                 </thead>
                 <tbody>
                     <?php foreach($musicosConexoes as $musico): ?>
-                    <tr class="">
-                        <td>
-                            <img class="rounded" src="../../public/fotos/<?= $musico['FotoPerfil'] ?>" alt="" width="80px">
+                    <tr>
+                        <td class="pl-2">
+                            <img class="rounded" src="../public/fotos/<?= $musico['FotoPerfil'] ?>" alt="" width="40px" height="40px">
                         </td>
-                        <td class="align-middle"><?= $musico['Nome'] ?></td>
                         <td class="align-middle"><?= $musico['NomeUsuario'] ?></td>
-                        <td class="align-middle"><?= $musico['Descricao'] ?></td>
-                        <td class="align-middle">
+                        <td>
+                            <span class="text-start"><?= $conexao['Descricao'] ?></span>
+                        </td>
+                        <td>
+                            <span class="text-start"><?= $conexao['Descricao'] ?></span>
+                        </td>
+                        <td class="align-middle text-center pr-2">
                             <?php if($musico['ID'] == $usuarioAtivoId): ?>
-                                <span>Você</span>
+                                <span class="">Você</span>
                             <?php elseif($musico['conectado']): ?>
                                 <button class="btn btn-outline-primary btn-sm btn-conectado disabled">Conectado</button>
                             <?php else: ?>
@@ -37,7 +39,7 @@
                 </tbody>
             </table>
         <?php else: ?>
-            <p>Ainda não existe nenhum músico cadastrado</p>
+            <div class="p-3">Outros músicos aparecerão aqui</div>
         <?php endif; ?>
     </div>
 </div>

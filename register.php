@@ -10,21 +10,21 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Criar conta | Vibrações Infinitas</title>
 
-    <link rel="stylesheet" href="../../public/css/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="../../public/css/adminlte.min.css">
-    <link rel="stylesheet" href="../../public/css/style.css">
+    <link rel="stylesheet" href="public/css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="public/css/adminlte.min.css">
+    <link rel="stylesheet" href="public/css/style.css">
 </head>
 
 <body class="hold-transition register-page">
     <div class="register-box">
-        <div class="card card-outline card-primary">
+        <div class="card card-outline card-primary mb-3">
             <div class="card-header text-center">
                 <a href="register.php" class="h1"><b>Vibrações Infinitas</b></a>
             </div>
             <div class="card-body">
                 <p class="login-box-msg">Crie sua conta</p>
 
-                <form action="../actions/register.php" method="post" enctype="multipart/form-data">
+                <form action="../actions/register.php" method="post" enctype="multipart/form-data" class="mb-2">
                     <label for="nome" class="mb-0">Nome</label>
                     <div class="input-group mb-3">
                         <input id="nome" name="nome" type="text" class="form-control" placeholder="Nome completo">
@@ -101,29 +101,16 @@ session_start();
             <!-- /.form-box -->
         </div><!-- /.card -->
 
-        <!-- Exibe as mensagens passadas pela Session -->
-        <?php if(isset($_SESSION['mensagens'])): ?>
-            <?php foreach($_SESSION['mensagens'] as $key => $mensagem): ?>
-                <div class="alert alert-<?= $mensagem['tipo'] ?> alert-dismissible fade show mt-3" role="alert">
-                    <span>
-                        <?= $mensagem['texto']; ?>
-                    </span>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <?php unset($_SESSION['mensagens'][$key]) ?>
-            <?php endforeach; ?>
-        <?php endif; ?>
+        <?php require_once('layout/mensagens.php') ?>
     </div>
     <!-- /.register-box -->
 
     <script src="https://kit.fontawesome.com/df3ed30ad5.js" crossorigin="anonymous"></script>
     <!-- jQuery -->
-    <script src="../../public/js/jquery-3.7.1.min.js"></script>
+    <script src="public/js/jquery-3.7.1.min.js"></script>
     <!-- Bootstrap -->
-    <script src="../../public/js/bootstrap/bootstrap.min.js"></script>
-    <script src="../../public/js/index.js"></script>
+    <script src="public/js/bootstrap/bootstrap.min.js"></script>
+    <script src="public/js/index.js"></script>
 </body>
 
 </html>

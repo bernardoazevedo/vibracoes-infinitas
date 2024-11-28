@@ -1,16 +1,7 @@
 <?php 
-
 session_start();
 
 require_once('db-connect.php');
-
-function limpaInput($mysqli_connect, $string){
-    $sql_escaped = mysqli_escape_string($mysqli_connect, $string);
-    $sql_html_escaped = htmlspecialchars($sql_escaped);
-
-    return $sql_html_escaped;
-}
-
 
 if(isset($_POST)){
     $nomeUsuario = $_POST['nomeUsuario'];
@@ -22,14 +13,21 @@ if(isset($_POST)){
         $mensagem['texto'] = 'Todos os campos devem ser preenchidos';
         $_SESSION['mensagens'][] = $mensagem;
         mysqli_close($connect);
-        header('Location: ../views/login.php');
+        header('Location: ../login.php');
     }
     else{
         //verifica se o nome de usuário está cadastrado
         $sql = "SELECT * 
                 FROM Usuario 
-                WHERE NomeUsuario = '$nomeUsuario'";
-        $resultado = mysqli_query($connect, $sql);
+                WHERE NomeUsuario = ?";
+
+        $stmt = mysqli_prepare($connect, $sql);
+        mysqli_stmt_bind_param($stmt, 's', $nomeUsuario);
+        mysqli_stmt_execute($stmt);
+        $resultado = mysqli_stmt_get_result($stmt);
+
+        mysqli_stmt_close($stmt);
+        mysqli_close($connect);
 
         if(mysqli_num_rows($resultado) > 0){
             //converte o resultado para um array associativo
@@ -45,23 +43,20 @@ if(isset($_POST)){
                 $_SESSION['usuario']['nomeUsuario'] = $dados['NomeUsuario'];
                 $_SESSION['usuario']['fotoPerfil'] = $dados['FotoPerfil'];
                 $_SESSION['usuario']['ultima-atividade'] = time();
-                mysqli_close($connect);
-                header('Location: ../views/home.php');
+                header('Location: ../index.php');
             }
             else{
                 $mensagem['tipo'] = 'danger';
                 $mensagem['texto'] = 'Nome de usuário ou senha inválido';
                 $_SESSION['mensagens'][] = $mensagem;
-                mysqli_close($connect);
-                header('Location: ../views/login.php');
+                header('Location: ../login.php');
             }
         }
         else{
             $mensagem['tipo'] = 'danger';
             $mensagem['texto'] = 'Nome de usuário ou senha inválido';
             $_SESSION['mensagens'][] = $mensagem;
-            mysqli_close($connect);
-            header('Location: ../views/login.php');
+            header('Location: ../login.php');
         }
     }
 }

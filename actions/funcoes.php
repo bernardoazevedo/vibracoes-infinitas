@@ -1,5 +1,15 @@
 <?php 
 
+function pr($variavel, $die = true){
+    echo '<pre>';
+    echo '<hr>--->: '; print_r($variavel);
+    echo '</pre>';
+
+    if($die){
+        die();
+    }
+}
+
 /**
  * Faz uma consulta de select no banco de dados
  */
@@ -107,7 +117,13 @@ function getMusicos(){
 }
 
 function getProjetos(){
-    $sql = "SELECT pm.ID, pm.Nome, pm.Descricao, u.Nome AS 'criador_nome', u.NomeUsuario AS 'criador_nomeUsuario'
+    $sql = "SELECT  pm.ID AS 'projeto_id', 
+                    pm.Nome AS 'projeto_nome', 
+                    pm.Descricao AS 'projeto_descricao', 
+                    u.Nome AS 'criador_nome', 
+                    u.NomeUsuario AS 'criador_nomeUsuario', 
+                    u.FotoPerfil AS 'criador_fotoPerfil', 
+                    u.Descricao AS 'criador_descricao'
             FROM ProjetoMusical pm
             INNER JOIN Usuario u ON pm.UsuarioCriadorID = u.ID"; 
 
@@ -154,7 +170,7 @@ function getProjetosParticipantes(){
 
     foreach($projetos as $key_projeto => $projeto){
 
-        $participantes = getMembrosProjeto($projeto['ID']);
+        $participantes = getMembrosProjeto($projeto['projeto_id']);
 
         foreach($participantes as $key_participante => $participante){
             $participante = getMusicoPeloId($participante['UsuarioID']);
@@ -165,6 +181,21 @@ function getProjetosParticipantes(){
     }
 
     return $projetos;
+}
+
+function getProjetoParticipantesPeloId($projeto_id){
+    $projeto = getProjetoPeloId($projeto_id);
+
+    $participantes = getMembrosProjeto($projeto['projeto_id']);
+
+    foreach($participantes as $key_participante => $participante){
+        $participante = getMusicoPeloId($participante['UsuarioID']);
+        $participantes[$key_participante] = $participante;
+    }
+    
+    $projeto['participantes'] = $participantes;
+
+    return $projeto;
 }
 
 function registraAtividadeMusica($usuario_id, $musica_id){
@@ -188,6 +219,13 @@ function getAtividades(){
     return selectDb($sql);
 }
 
+function getMusicas(){
+    $sql = "SELECT *
+            FROM Musica";
+
+    return selectDb($sql);
+}
+
 function getMusicaPeloId($musica_id){
     $sql = "SELECT *
             FROM Musica
@@ -197,6 +235,10 @@ function getMusicaPeloId($musica_id){
     return selectDb($sql)[0];
 }
 
+/**
+ * Busca as atividades das conexões do usuário para exibir no feed
+ * Ordena pelas atividades mais recentes
+ */
 function getAtividadesDasConexoes($usuario_id){
     $conexoes = getConexoes($usuario_id);
 
@@ -211,7 +253,8 @@ function getAtividadesDasConexoes($usuario_id){
         $sql .= "$idConexao,";
     }
     $sql = substr($sql, 0, (strlen($sql)-1));
-    $sql .= ")";
+    $sql .= ")
+            ORDER BY DataAtividade DESC";
     
     return selectDb($sql);
 }

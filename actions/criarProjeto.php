@@ -2,9 +2,9 @@
 
 session_start();
 
-require_once(__DIR__.'/controleSessao.php');
-require_once(__DIR__.'/funcoes.php');
-require_once(__DIR__.'/db-connect.php');
+require_once('controleSessao.php');
+require_once('funcoes.php');
+require_once('db-connect.php');
 
 $nomeProjeto = $_POST['nomeProjeto'];
 $descricaoProjeto = $_POST['descricaoProjeto'];
@@ -18,7 +18,7 @@ if(empty($nomeProjeto) || empty($descricaoProjeto)){
     $mensagem['texto'] = 'Todo projeto precisa ter um nome e uma descrição';
     $_SESSION['mensagens'][] = $mensagem;
     mysqli_close($connect);
-    header('Location: ../views/home.php');
+    header('Location: ../index.php');
     die();
 }
 
@@ -47,7 +47,7 @@ if($result){
             $mensagem['tipo'] = 'success';
             $mensagem['texto'] = 'Projeto criado com sucesso';
             $_SESSION['mensagens'][] = $mensagem;
-            header('Location: ../views/home.php');
+            header('Location: ../index.php');
             die();    
         }
         else{
@@ -55,7 +55,7 @@ if($result){
             $mensagem['tipo'] = 'danger';
             $mensagem['texto'] = 'Erro ao cadastrar membros do projeto, tente novamente';
             $_SESSION['mensagens'][] = $mensagem;
-            header('Location: ../views/home.php');
+            header('Location: ../index.php');
             die();    
         }
     }
@@ -65,8 +65,8 @@ else{
     $mensagem['tipo'] = 'danger';
     $mensagem['texto'] = 'Erro ao criar projeto, tente novamente';
     $_SESSION['mensagens'][] = $mensagem;
-    header('Location: ../views/home.php');
+    header('Location: ../index.php');
     die();
 }
 
-header('Location: ../views/home.php');
+header('Location: ../index.php');

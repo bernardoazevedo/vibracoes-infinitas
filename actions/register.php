@@ -83,6 +83,7 @@ function uploadFoto($nome, $nomeTemporario, $pasta){
 
 
 require_once('db-connect.php');
+require_once('funcoes.php');
 
 session_start();
 
@@ -104,7 +105,7 @@ if(isset($_POST)){
         $mensagem['texto'] = "Formato de arquivo ($extensaoFoto) inválido";
         $_SESSION['mensagens'][] = $mensagem;
         mysqli_close($connect);
-        header('Location: ../views/register.php');
+        header('Location: ../register.php');
         die();
     }
 
@@ -114,7 +115,7 @@ if(isset($_POST)){
         $mensagem['texto'] = 'Você deve preencher todos os campos';
         $_SESSION['mensagens'][] = $mensagem;
         mysqli_close($connect);
-        header('Location: ../views/register.php');
+        header('Location: ../register.php');
         die();
     }
     else{  
@@ -130,7 +131,7 @@ if(isset($_POST)){
             $mensagem['texto'] = 'Esse nome de usuário já é usado em outra conta';
             $_SESSION['mensagens'][] = $mensagem;
             mysqli_close($connect);
-            header('Location: ../views/register.php');
+            header('Location: ../register.php');
             die();
         }
         else{
@@ -139,7 +140,7 @@ if(isset($_POST)){
                 $nomeUsuario = limpaInput($connect, $nomeUsuario);
                 $senhaCriptografada = password_hash($senha, PASSWORD_DEFAULT);
 
-                $nomeFoto = uploadFoto($novoNome, $nomeTempArquivo, '../../public/fotos/');
+                $nomeFoto = uploadFoto($novoNome, $nomeTempArquivo, '../public/fotos/');
 
                 if(! $nomeFoto){
                     $mensagem['tipo'] = 'danger';
@@ -147,16 +148,21 @@ if(isset($_POST)){
                     $_SESSION['mensagens'][] = $mensagem;
                     
                     mysqli_close($connect);
-                    header('Location: ../views/login.php');
+                    header('Location: ../login.php');
                     die();
                 }
 
                 $sql = "INSERT INTO Usuario (Nome, NomeUsuario, Senha, FotoPerfil, Descricao)
-                        VALUES ('$nome', '$nomeUsuario', '$senhaCriptografada', '$nomeFoto', '$descricao')";
-                mysqli_query($connect, $sql);
+                        VALUES (?, ?, ?, ?, ?)";
 
+                $stmt = mysqli_prepare($connect, $sql);
+                mysqli_stmt_bind_param($stmt, 'sssss', $nome, $nomeUsuario, $senhaCriptografada, $nomeFoto, $descricao);
+                mysqli_stmt_execute($stmt);
+                $resultado = mysqli_stmt_get_result($stmt);
+            
+                mysqli_stmt_close($stmt);
                 mysqli_close($connect);
-                header('Location: ../views/login.php');
+                header('Location: ../login.php');
                 die();
             }
             else{
@@ -164,7 +170,7 @@ if(isset($_POST)){
                 $mensagem['texto'] = 'As senhas não conferem';
                 $_SESSION['mensagens'][] = $mensagem;
                 mysqli_close($connect);
-                header('Location: ../views/register.php');
+                header('Location: ../register.php');
                 die();
             }
         }

@@ -1,7 +1,7 @@
 <?php 
 
-require_once '../actions/db-connect.php';
-// require_once '../actions/funcoes.php';
+require_once 'actions/db-connect.php';
+// require_once 'actions/funcoes.php';
 
 $sql = "SELECT * 
         FROM Usuario 
@@ -18,9 +18,9 @@ $usuario = select($sql);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projetos | Vibrações Infinitas</title>
 
-    <link rel="stylesheet" href="../../public/css/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="../../public/css/adminlte.min.css">
-    <link rel="stylesheet" href="../../public/css/style.css">
+    <link rel="stylesheet" href="public/css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="public/css/adminlte.min.css">
+    <link rel="stylesheet" href="public/css/style.css">
 </head>
 <body>
 
@@ -90,9 +90,9 @@ $usuario = select($sql);
 
 <script src="https://kit.fontawesome.com/df3ed30ad5.js" crossorigin="anonymous"></script>
     <!-- jQuery -->
-    <script src="../../public/js/jquery-3.7.1.min.js"></script>
+    <script src="public/js/jquery-3.7.1.min.js"></script>
     <!-- Bootstrap -->
-    <script src="../../public/js/bootstrap/bootstrap.min.js"></script>
-    <script src="../../public/js/index.js"></script>
+    <script src="public/js/bootstrap/bootstrap.min.js"></script>
+    <script src="public/js/index.js"></script>
 </body>
 </html>
