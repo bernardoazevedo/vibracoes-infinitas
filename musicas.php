@@ -3,7 +3,6 @@ session_start();
 
 require_once('actions/controleSessao.php');
 require_once('actions/funcoes.php');
-require_once('actions/db-connect.php');
 
 $usuarioAtivo = $_SESSION['usuario'];
 $usuarioAtivoId = $usuarioAtivo['id'];

@@ -6,6 +6,8 @@ require_once('db-connect.php');
 if(isset($_POST)){
     $nomeUsuario = $_POST['nomeUsuario'];
     $senha = $_POST['senha'];
+    
+    $connect = mysqli_connect($hostname, $username, $password, $database); 
 
     //se algum campo não foi preenchido, exibe o erro
     if(empty($nomeUsuario) || empty($senha)){

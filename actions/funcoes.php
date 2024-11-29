@@ -22,9 +22,10 @@ function geraMensagem($mensagem, $tipo = 'alert'){
  * Faz uma consulta no banco de dados utilizando o conceito de transações
  */
 function consulta($sql, $parametros = null){
+    require_once('db-connect.php');
 
     try{
-        $connect = new PDO("mysql:host=localhost;dbname=vibracoes_infinitas", "admin", "admin", [
+        $connect = new PDO("mysql:host=$hostname;dbname=$database", $username, $password, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
         ]);
     }

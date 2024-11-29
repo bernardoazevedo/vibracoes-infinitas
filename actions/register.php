@@ -99,6 +99,8 @@ if(isset($_POST)){
     $nomeTempArquivo = $foto['tmp_name'];
     $novoNome = uniqid().".$extensaoFoto";
 
+    $connect = mysqli_connect($hostname, $username, $password, $database); 
+
     //verifica se o formato da foto é aceito
     if(!formatoValido($extensaoFoto)){
         $mensagem['tipo'] = 'danger';

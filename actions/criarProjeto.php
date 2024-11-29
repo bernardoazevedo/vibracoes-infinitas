@@ -4,6 +4,7 @@ session_start();
 
 require_once('controleSessao.php');
 require_once('funcoes.php');
+require_once('db-connect.php');
 
 $nomeProjeto = trim($_POST['nomeProjeto']);
 $descricaoProjeto = trim($_POST['descricaoProjeto']);
@@ -19,7 +20,7 @@ if(empty($nomeProjeto) || empty($descricaoProjeto)){
 }
 
 try{
-    $connect = new PDO("mysql:host=localhost;dbname=vibracoes_infinitas", "admin", "admin", [
+    $connect = new PDO("mysql:host=$hostname;dbname=$database", $username, $password, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     ]);
 }

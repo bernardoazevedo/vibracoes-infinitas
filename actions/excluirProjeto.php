@@ -9,6 +9,8 @@ $projetoId = $_POST['projetoId'];
 $usuarioAtivo = $_SESSION['usuario'];
 $usuarioAtivoId = $usuarioAtivo['id'];
 
+$connect = mysqli_connect($hostname, $username, $password, $database); 
+
 // se algum campo não foi preenchido, exibe o erro
 if(empty($projetoId) || empty($usuarioAtivoId)){
     $mensagem['tipo'] = 'danger';
