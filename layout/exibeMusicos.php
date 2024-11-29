@@ -4,30 +4,22 @@
     </div>
     <div class="card-body p-0">
         <?php if(count($musicosConexoes)): ?>
-            <table class="table table-sm table-hover table-borderless">
-                <thead>
-
-                </thead>
-                <tbody>
-                    <?php foreach($musicosConexoes as $musico): ?>
-                        <?php if($musico['ID'] != $usuarioAtivoId): ?>
-                            <tr>
-                                <td class="pl-2">
-                                    <img class="rounded" src="../public/fotos/<?= $musico['FotoPerfil'] ?>" alt="" width="40px" height="40px">
-                                </td>
-                                <td class="align-middle"><?= $musico['NomeUsuario'] ?></td>
-                                <td class="align-middle text-center pr-2">
-                                    <?php if($musico['conectado']): ?>
-                                        <button class="btn btn-outline-primary btn-sm btn-conectado disabled">Conectado</button>
-                                    <?php else: ?>
-                                        <button class="btn btn-outline-primary btn-sm btn-conectar" value="<?= $musico['ID'] ?>">Conectar</button>
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+            <div class="">
+                <?php foreach($musicosConexoes as $musico): ?>
+                    <?php if($musico['ID'] != $usuarioAtivoId): ?>
+                        <div class="w-auto p-2 d-flex border-top">
+                            <img src="../public/fotos/<?= $musico['FotoPerfil'] ?>" class="rounded" alt="" width="40px" height="40px">
+                            <span class="text-start ml-2 flex-fill text-truncate align-self-center"><?= $musico['NomeUsuario'] ?></span>
+                            
+                            <?php if($musico['conectado']): ?>
+                                <button class="btn btn-outline-primary btn-sm btn-conectado disabled">Conectado</button>
+                            <?php else: ?>
+                                <button class="btn btn-outline-primary btn-sm btn-conectar" value="<?= $musico['ID'] ?>">Conectar</button>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
         <?php else: ?>
             <div class="p-3">Outros músicos aparecerão aqui</div>
         <?php endif; ?>

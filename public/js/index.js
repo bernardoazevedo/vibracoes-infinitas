@@ -1,9 +1,9 @@
+
 $('.close').each(function() {
     $(this).click(function(){
         $(this).parent().addClass('d-none');
     });
 });
-
 
 $('.btn-conectar').each(function() {
     $(this).click(function(){
@@ -18,13 +18,8 @@ $('.btn-conectar').each(function() {
                 conexaoId: conexaoId
             },
             success: function(response){
-                if(response == 'true'){
-                    console.log('Conexão criada: '+response);
-                    button.text('Conectado');
-                }
-                else{
-                    console.log('Erro ao criar conexão');
-                }
+                console.log('Conexão criada: '+response);
+                button.text('Conectado');
             },
             error: function(response){
                 console.log('Erro ao criar conexão');
@@ -46,13 +41,8 @@ $('.btn-desconectar').each(function() {
                 conexaoId: conexaoId
             },
             success: function(response){
-                if(response == 'true'){
-                    console.log('Conexão excluída: '+response);
-                    button.text('Desconectado');
-                }
-                else{
-                    console.log('Erro ao excluir conexão');
-                }
+                console.log('Conexão excluída: '+response);
+                button.text('Desconectado');
             },
             error: function(response){
                 console.log('Erro ao excluir conexão');

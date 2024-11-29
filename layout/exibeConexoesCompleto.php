@@ -21,10 +21,10 @@
                         <td class="align-middle">
                             <span class="text-start"><?= $conexao['NomeUsuario'] ?></span>
                         </td>
-                        <td>
+                        <td class="align-middle">
                             <span class="text-start"><?= $conexao['Nome'] ?></span>
                         </td>
-                        <td>
+                        <td class="align-middle">
                             <span class="text-start"><?= $conexao['Descricao'] ?></span>
                         </td>
                         <td class="align-middle text-center pr-2">

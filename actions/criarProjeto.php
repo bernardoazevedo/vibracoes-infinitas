@@ -4,69 +4,81 @@ session_start();
 
 require_once('controleSessao.php');
 require_once('funcoes.php');
-require_once('db-connect.php');
 
-$nomeProjeto = $_POST['nomeProjeto'];
-$descricaoProjeto = $_POST['descricaoProjeto'];
+$nomeProjeto = trim($_POST['nomeProjeto']);
+$descricaoProjeto = trim($_POST['descricaoProjeto']);
 $musicos = $_POST['musicos'];
 $usuarioAtivo = $_SESSION['usuario'];
 $usuarioAtivoId = $usuarioAtivo['id'];
 
 //se algum campo não foi preenchido, exibe o erro
 if(empty($nomeProjeto) || empty($descricaoProjeto)){
-    $mensagem['tipo'] = 'danger';
-    $mensagem['texto'] = 'Todo projeto precisa ter um nome e uma descrição';
-    $_SESSION['mensagens'][] = $mensagem;
-    mysqli_close($connect);
-    header('Location: ../index.php');
+    geraMensagem('Todo projeto precisa ter um nome e uma descrição', 'danger');
+    header('Location: ../projetos.php');
     die();
 }
 
-$sql = "INSERT INTO ProjetoMusical(Nome, Descricao, UsuarioCriadorID)
-        VALUES('$nomeProjeto', '$descricaoProjeto', $usuarioAtivoId)";
+try{
+    $connect = new PDO("mysql:host=localhost;dbname=vibracoes_infinitas", "admin", "admin", [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+    ]);
+}
+catch(Exception $e){
+    geraMensagem('Erro ao conectar: '.$e->getMessage(), 'danger');
+}
 
-$result = mysqli_query($connect, $sql);
-$projetoId = mysqli_insert_id($connect);
+try{
+    $connect->beginTransaction();
 
-// se o projeto tiver sido criado com sucesso, cadastra os membros
-if($result){
-    registraAtividadeProjeto($usuarioAtivoId, $projetoId);
+    // registra o projeto no banco de dados
+    $sql_projeto = "INSERT INTO ProjetoMusical(Nome, Descricao, UsuarioCriadorID)
+            VALUES(:nomeProjeto, :descricaoProjeto,:usuarioAtivoId)";
+
+    $stmt = $connect->prepare($sql_projeto);
+
+    $stmt->bindParam(':nomeProjeto', $nomeProjeto);
+    $stmt->bindParam(':descricaoProjeto', $descricaoProjeto);
+    $stmt->bindParam(':usuarioAtivoId', $usuarioAtivoId);
+    
+    $stmt->execute();
+    $projetoId = $connect->lastInsertId();
 
     if($musicos){
+        $quantidade = count($musicos);
+
         // constrói a query para inserir os membros do projeto
-        $sql = "INSERT INTO MembroProjeto(ProjetoID, UsuarioID)
-                VALUES";
-        foreach($musicos as $musico){
-            $sql .= " ($projetoId, $musico),";
+        $sql_membros = "INSERT INTO MembroProjeto(ProjetoID, UsuarioID) VALUES";
+        for($i=0; $i < $quantidade; $i++){
+            $sql_membros .= " (:projeto, :musico$i),";
         }
-        $sql = substr($sql, 0, (strlen($sql)-1));
-        $result = mysqli_query($connect, $sql);
+        $sql_membros = substr($sql_membros, 0, (strlen($sql_membros)-1));
 
-        if($result){
-            mysqli_close($connect);
-            $mensagem['tipo'] = 'success';
-            $mensagem['texto'] = 'Projeto criado com sucesso';
-            $_SESSION['mensagens'][] = $mensagem;
-            header('Location: ../index.php');
-            die();    
+        $stmt = $connect->prepare($sql_membros);
+        
+        $stmt->bindParam(":projeto", $projetoId);
+        for($i=0; $i < $quantidade; $i++){
+            $stmt->bindParam(":musico$i", $musicos[$i]);
         }
-        else{
-            mysqli_close($connect);
-            $mensagem['tipo'] = 'danger';
-            $mensagem['texto'] = 'Erro ao cadastrar membros do projeto, tente novamente';
-            $_SESSION['mensagens'][] = $mensagem;
-            header('Location: ../index.php');
-            die();    
-        }
+
+        $stmt->execute();
     }
+
+    // registra a atividade para exibir no feed
+    $sql_atividade = "INSERT INTO FeedAtividades(UsuarioID, ProjetoID)
+                      VALUES(:usuarioId, :projetoId)";
+    $stmt = $connect->prepare($sql_atividade);
+    $stmt->bindParam(':usuarioId', $usuarioAtivoId);
+    $stmt->bindParam(':projetoId', $projetoId);
+
+    $stmt->execute();
+
+    geraMensagem('Projeto criado com sucesso', 'success');
 }
-else{
-    mysqli_close($connect);
-    $mensagem['tipo'] = 'danger';
-    $mensagem['texto'] = 'Erro ao criar projeto, tente novamente';
-    $_SESSION['mensagens'][] = $mensagem;
-    header('Location: ../index.php');
-    die();
+catch(Exception $e){
+    $connect->rollback();
+    geraMensagem('Erro ao realizar operação: '.$e->getMessage(), 'danger');
 }
 
-header('Location: ../index.php');
+$connect->commit();
+
+header('Location: ../projetos.php');

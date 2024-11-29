@@ -1,5 +1,10 @@
 <?php 
 session_start();
+
+require_once('actions/funcoes.php');
+
+$usuarioAtivo = getUsuarioLogado();
+$usuario = getMusicoPeloId($usuarioAtivo['id']);
 ?>
 
 <!DOCTYPE html>
@@ -8,7 +13,7 @@ session_start();
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Criar conta | Vibrações Infinitas</title>
+    <title>Editar perfil | Vibrações Infinitas</title>
 
     <link rel="stylesheet" href="public/css/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="public/css/adminlte.min.css">
@@ -22,12 +27,12 @@ session_start();
                 <a href="register.php" class="h1"><b>Vibrações Infinitas</b></a>
             </div>
             <div class="card-body">
-                <p class="login-box-msg">Crie sua conta</p>
+                <p class="login-box-msg">Edite as informações do seu perfil</p>
 
-                <form action="../actions/register.php" method="post" enctype="multipart/form-data" class="mb-2">
+                <form action="../actions/register.php" method="post" enctype="multipart/form-data">
                     <label for="nome" class="mb-0">Nome</label>
                     <div class="input-group mb-3">
-                        <input id="nome" name="nome" type="text" class="form-control" placeholder="Nome completo" autofocus>
+                        <input id="nome" name="nome" type="text" class="form-control" placeholder="Nome completo" value="<?= $usuario['Nome'] ?>" autofocus>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
@@ -37,8 +42,7 @@ session_start();
 
                     <label for="nomeUsuario" class="mb-0">Nome de usuário</label>
                     <div class="input-group mb-3">
-                        <input id="nomeUsuario" name="nomeUsuario" type="text" class="form-control"
-                            placeholder="Nome de usuário">
+                        <input id="nomeUsuario" name="nomeUsuario" type="text" class="form-control" value="<?= $usuario['NomeUsuario'] ?>" placeholder="Nome de usuário">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
@@ -58,7 +62,7 @@ session_start();
 
                     <label for="descricao" class="mb-0">Descrição do perfil</label>
                     <div class="input-group mb-3">
-                        <textarea class="form-control" name="descricao" id="descricao" placeholder="Descrição do perfil"></textarea>
+                        <textarea class="form-control" name="descricao" id="descricao" value="<?= $usuario['Descricao'] ?>" placeholder="Descrição do perfil"></textarea>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
@@ -68,7 +72,7 @@ session_start();
 
                     <label for="senha" class="mb-0">Senha</label>
                     <div class="input-group mb-3">
-                        <input id="senha" name="senha" type="password" class="form-control" placeholder="Senha">
+                        <input id="senha" name="senha" type="password" class="form-control" placeholder="Senha" value="">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
@@ -76,10 +80,19 @@ session_start();
                         </div>
                     </div>
 
-                    <label for="confirma-senha" class="mb-0">Confirme sua senha</label>
+                    <label for="confirma-senha" class="mb-0">Nova senha</label>
                     <div class="input-group mb-3">
-                        <input id="confirma-senha" name="confirma-senha" type="password" class="form-control"
-                            placeholder="Digite a senha novamente">
+                        <input id="confirma-senha" name="confirma-senha" type="password" class="form-control" placeholder="Digite a senha novamente">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <label for="confirma-senha" class="mb-0">Confirme sua nova senha</label>
+                    <div class="input-group mb-3">
+                        <input id="confirma-senha" name="confirma-senha" type="password" class="form-control" placeholder="Digite a senha novamente">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
@@ -90,13 +103,11 @@ session_start();
                     <div class="row">
                         <!-- /.col -->
                         <div class="col-12">
-                            <button type="submit" class="btn btn-primary btn-block">Criar conta</button>
+                            <button type="submit" class="btn btn-primary btn-block">Salvar alterações</button>
                         </div>
                         <!-- /.col -->
                     </div>
                 </form>
-
-                <a href="login.php" class="text-center">Já tenho conta</a>
             </div>
             <!-- /.form-box -->
         </div><!-- /.card -->

@@ -5,7 +5,7 @@
     <div class="card-body">
         <form id="form-upload"  action="../actions/criarProjeto.php" method="post" enctype="multipart/form-data">
             <div class="row g-3">
-                <div class="col">
+                <div class="col col-12 col-lg-7">
                     <div>
                         <label for="nomeProjeto">Nome do projeto</label>
                         <input class="form-control" type="text" name="nomeProjeto" id="nomeProjeto" placeholder="Digite o nome do projeto">
@@ -17,7 +17,7 @@
                     </div>
                 </div>
 
-                <div class="col">
+                <div class="col col-12 col-lg-5">
                     <label for="musicos">Adicionar músicos</label>
                     <div>
                         <?php foreach($musicos as $musico): ?>
@@ -25,7 +25,7 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="musicos[]" value="<?= $musico['ID'] ?>" id="<?= $musico['ID'] ?>">
                                 <label class="form-check-label" for="flexCheckDefault">
-                                    <?= $musico['Nome'] ?>
+                                    <?= $musico['NomeUsuario'] ?>
                                 </label>
                             </div>
                             <?php endif; ?>

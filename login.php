@@ -28,7 +28,7 @@ session_start();
                 <form action="actions/login.php" method="post" class="mb-2">
                     <div class="input-group mb-3">
                         <input id="nomeUsuario" name="nomeUsuario" type="text" class="form-control"
-                            placeholder="Nome de usuário">
+                            placeholder="Nome de usuário" autofocus>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
@@ -65,7 +65,7 @@ session_start();
     <!-- jQuery -->
     <script src="public/js/jquery-3.7.1.min.js"></script>
     <!-- Bootstrap -->
-    <script src="public/js/bootstrap/bootstrap.min.js"></script>
+    <script src="public/js/bootstrap/bootstrap.bundle.min.js"></script>
     <script src="public/js/index.js"></script>
 </body>
 

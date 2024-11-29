@@ -15,15 +15,15 @@
                 <tbody>
                     <?php foreach($musicosConexoes as $musico): ?>
                     <tr>
-                        <td class="pl-2">
+                        <td class="pl-2 align-middle">
                             <img class="rounded" src="../public/fotos/<?= $musico['FotoPerfil'] ?>" alt="" width="40px" height="40px">
                         </td>
                         <td class="align-middle"><?= $musico['NomeUsuario'] ?></td>
-                        <td>
-                            <span class="text-start"><?= $conexao['Descricao'] ?></span>
+                        <td class="align-middle">
+                            <span class="text-start"><?= $musico['Nome'] ?></span>
                         </td>
-                        <td>
-                            <span class="text-start"><?= $conexao['Descricao'] ?></span>
+                        <td class="align-middle">
+                            <span class="text-start"><?= $musico['Descricao'] ?></span>
                         </td>
                         <td class="align-middle text-center pr-2">
                             <?php if($musico['ID'] == $usuarioAtivoId): ?>

@@ -8,12 +8,11 @@ require_once('actions/db-connect.php');
 $usuarioAtivo = $_SESSION['usuario'];
 $usuarioAtivoId = $usuarioAtivo['id'];
 
-$musicos = getMusicos();
-$atividades = getAtividadesDasConexoes($usuarioAtivoId);
 $conexoes = getConexoes($usuarioAtivoId);
 $musicos = getMusicos();
 $musicosConexoes = getMusicosConexoes($usuarioAtivoId);
 
+$atividades = getAtividadesDasConexoes($usuarioAtivoId);
 ?>
 
 <!DOCTYPE html>
@@ -29,42 +28,37 @@ $musicosConexoes = getMusicosConexoes($usuarioAtivoId);
 </head>
 <body>
     <?php require_once('layout/navbar.php'); ?>
-    <div class="">
+    <div>
         <div class="row align-items-start">
             <?php require_once('layout/barraEsquerda.php'); ?>
-            <div class="col-sm-6 mt-3">
+            <div class="col-lg-6 mt-3">
                 <main class="container">
                     <?php require_once('layout/mensagens.php'); ?>
                 <!-- Conteúdo da página aqui -->
 
-                    <?php require_once('layout/enviarMusica.php'); ?>
-
-                    <h3 class="mt-4">Atividades</h3>
-                    <?php if(count($atividades)): ?>
-                        <?php foreach($atividades as $atividade): ?>
-                            <?php 
+                    <h3 class="">Atividades</h3>
+                    <?php 
+                        if(count($atividades)):
+                            foreach($atividades as $atividade): 
                                 $dataAtividade = new DateTime($atividade['DataAtividade']);
                                 $data = $dataAtividade->format('H:i - d/m/Y');
 
                                 if($atividade['MusicaID']): 
                                     $musica = getMusicaPeloId($atividade['MusicaID']); 
                                     $usuario = getMusicoPeloId($atividade['UsuarioID']); 
-                                    
                                     require('layout/exibeMusica.php');
-                            ?>
 
-                            <?php elseif($atividade['ProjetoID']): 
-                                $projeto = getProjetoParticipantesPeloId($atividade['ProjetoID']);
+                                elseif($atividade['ProjetoID']): 
+                                    $projeto = getProjetoParticipantesPeloId($atividade['ProjetoID']);
+                                    require('layout/exibeProjeto.php');
                                 
-                                require('layout/exibeProjeto.php');
-                            ?>
+                                endif; 
+                            endforeach;
 
-                            <?php endif; ?>
-                        <?php endforeach; ?>
-                    <?php else: ?>
+                        else: ?>
                         <div class="card">
                             <div class="card-body">
-                                Ainda não existe nenhuma atividade
+                                Quando você se conectar com algum músico, suas atividades aparecerão aqui
                             </div>
                         </div>
                     <?php endif; ?>
@@ -77,7 +71,7 @@ $musicosConexoes = getMusicosConexoes($usuarioAtivoId);
     </div>
     <script src="https://kit.fontawesome.com/df3ed30ad5.js" crossorigin="anonymous"></script>
     <script src="public/js/jquery-3.7.1.min.js"></script>
-    <script src="public/js/bootstrap/bootstrap.min.js"></script>
+    <script src="public/js/bootstrap/bootstrap.bundle.min.js"></script>
     <script src="public/js/index.js"></script>
 </body>
 </html>

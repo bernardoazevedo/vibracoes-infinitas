@@ -1,121 +1,92 @@
 <?php 
 
 function pr($variavel, $die = true){
-    echo '<pre>';
+    echo '<pre>---';
     echo '<hr>--->: '; print_r($variavel);
-    echo '</pre>';
+    echo '</pre>---';
 
-    if($die){
+    if($die)
         die();
-    }
 }
 
 /**
- * Faz uma consulta de select no banco de dados
+ * Recebe uma mensagem e seu tipo e salva na session, para depois ser exibida na view
  */
-// function selectDb(string $sql, string $tipos = null, $parametros = null){
-//     $connect = mysqli_connect('localhost', 'admin', 'admin', 'vibracoes_infinitas'); 
+function geraMensagem($mensagem, $tipo = 'alert'){
+    $novaMensagem['texto'] = $mensagem;
+    $novaMensagem['tipo'] = $tipo;
+    $_SESSION['mensagens'][] = $novaMensagem;
+}
 
-//     $stmt = mysqli_prepare($connect, $sql);
+/**
+ * Faz uma consulta no banco de dados utilizando o conceito de transações
+ */
+function consulta($sql, $parametros = null){
 
-//     if(isset($tipos) && isset($parametros)){
-//         mysqli_stmt_bind_param($stmt, $tipos, $parametros);
-//     }
-
-//     mysqli_stmt_execute($stmt);
-
-//     $resultado = mysqli_stmt_get_result($stmt);
-
-//     if(mysqli_num_rows($resultado) > 0){
-//         //converte o resultado para um array associativo
-//         $resultado = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
-        
-//         // if(count($resultado) == 1){
-//         //     $resultado = $resultado[0];
-//         // }
-//     }
-//     else{
-//         // $resultado = mysqli_fetch_assoc($resultado);
-//         // $resultado = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
-//     }
-
-//     mysqli_stmt_close($stmt);
-//     mysqli_close($connect);
-
-//     return $resultado ?? false;
-// }
-function selectDb($query, $formats = null, $params = null){
-    $connect = mysqli_connect('localhost', 'admin', 'admin', 'vibracoes_infinitas'); 
-
-    $a_params = array();
-
-    $param_type = '';
-    $n = count($formats);
-    for($i = 0; $i < $n; $i++) {
-        $param_type .= $formats[$i];
+    try{
+        $connect = new PDO("mysql:host=localhost;dbname=vibracoes_infinitas", "admin", "admin", [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+        ]);
+    }
+    catch(Exception $e){
+        geraMensagem('Erro ao conectar: '.$e->getMessage(), 'danger');
     }
 
-    $a_params[] = & $param_type;
+    try{
+        $connect->beginTransaction();
 
-    for($i = 0; $i < $n; $i++) {
-        $a_params[] = & $params[$i];
-    }
+        $stmt = $connect->prepare($sql);
 
-    $stmt = $connect->prepare($query);
-    call_user_func_array(array($stmt, 'bind_param'), $a_params);
-    $stmt->execute();
-
-    $meta = $stmt->result_metadata();
-    while ($field = $meta->fetch_field()) {
-        $columns[] = &$row[$field->name];
-    }
-
-    call_user_func_array(array($stmt, 'bind_result'), $columns);
-
-    while ($stmt->fetch()) {
-        foreach($row as $key => $val) {
-            $x[$key] = $val;
+        if($parametros){
+            $quantidade = count($parametros);
+            for($i=1; $i <= $quantidade; $i++){
+                $stmt->bindParam($i, $parametros[$i-1]);
+            }
         }
-        $results[] = $x;
+
+        $stmt->execute();
+        $connect->commit();
     }
-    $stmt->close();
-    return $results;
+    catch(Exception $e){
+        $connect->rollback();
+        geraMensagem('Erro ao realizar operação: '.$e->getMessage(), 'danger');
+    }
+
+    if($stmt->rowCount() > 0){
+        $resultado = [];
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+            $resultado[] = $row;
+        }        
+    }
+
+    return $resultado;
 }
 
 /**
- * Faz um insert no banco de dados
+ * Retorna as conexões do músico
  */
-function insertDb($sql){
-    $connect = mysqli_connect('localhost', 'admin', 'admin', 'vibracoes_infinitas'); 
-
-    $stmt = mysqli_prepare($connect, $sql);
-
-    mysqli_stmt_execute($stmt);
-
-    $resultado = mysqli_stmt_get_result($stmt);
-
-    mysqli_stmt_close($stmt);
-    mysqli_close($connect);
-
-    return $resultado ?? false;
-}
-
 function getConexoes($idMusico){
     $sql = "SELECT c.UsuarioOrigemID, c.UsuarioDestinoID, c.DataCriacao, u.ID, u.Nome, u.NomeUsuario, u.FotoPerfil, u.Descricao
             FROM Conexao c
             INNER JOIN Usuario u ON c.UsuarioDestinoID = u.ID
             WHERE c.UsuarioOrigemID = ?"; 
     
-    return selectDb($sql, 'i', array($idMusico));
+    return consulta($sql, [$idMusico]);
 }
 
+/**
+ * Retorna todos os músicos
+ */
 function getMusicos(){
     $sql = "SELECT ID, Nome, NomeUsuario, FotoPerfil, Descricao 
             FROM Usuario";
 
-    return selectDb($sql);
+    return consulta($sql);
 }
 
+/**
+ * Retorna todos os projetos
+ */
 function getProjetos(){
     $sql = "SELECT  pm.ID AS 'projeto_id', 
                     pm.Nome AS 'projeto_nome', 
@@ -127,9 +98,12 @@ function getProjetos(){
             FROM ProjetoMusical pm
             INNER JOIN Usuario u ON pm.UsuarioCriadorID = u.ID"; 
 
-    return selectDb($sql);
+    return consulta($sql);
 }
 
+/**
+ * Retorna um projeto pelo seu id
+ */
 function getProjetoPeloId($projetoId){
     $sql = "SELECT  pm.ID AS 'projeto_id', 
                     pm.Nome AS 'projeto_nome', 
@@ -140,31 +114,38 @@ function getProjetoPeloId($projetoId){
                     u.Descricao AS 'criador_descricao' 
             FROM ProjetoMusical pm
             INNER JOIN Usuario u ON pm.UsuarioCriadorID = u.ID
-            WHERE pm.ID = $projetoId
+            WHERE pm.ID = ? 
             LIMIT 1"; 
 
-    return selectDb($sql)[0];
+    return consulta($sql, [$projetoId])[0];
 }
 
+/**
+ * Retorna os membros de um projeto pelo seu id
+ */
 function getMembrosProjeto($projetoId){
     $sql = "SELECT * 
             FROM MembroProjeto mp
             WHERE mp.ProjetoID = ?"; 
 
-    $resultado = selectDb($sql, 'i', array($projetoId));
-
-    return $resultado;
+    return consulta($sql, [$projetoId]);
 }
 
+/**
+ * Retorna um músico pelo seu id
+ */
 function getMusicoPeloId($idMusico){
     $sql = "SELECT ID, Nome, NomeUsuario, FotoPerfil, Descricao
             FROM Usuario u
             WHERE u.ID = ?
             LIMIT 1";
 
-    return selectDb($sql, 'i', array($idMusico))[0];
+    return consulta($sql, [$idMusico])[0];
 }
 
+/**
+ * Retorna todos os projetos, cada um com todos os seus participantes
+ */
 function getProjetosParticipantes(){
     $projetos = getProjetos();
 
@@ -183,6 +164,9 @@ function getProjetosParticipantes(){
     return $projetos;
 }
 
+/**
+ * Retorna um projeto com todos os seus participantes
+ */
 function getProjetoParticipantesPeloId($projeto_id){
     $projeto = getProjetoPeloId($projeto_id);
 
@@ -198,41 +182,37 @@ function getProjetoParticipantesPeloId($projeto_id){
     return $projeto;
 }
 
-function registraAtividadeMusica($usuario_id, $musica_id){
-    $sql = "INSERT INTO FeedAtividades(UsuarioID, MusicaID)
-            VALUES($usuario_id, $musica_id)";
-
-    return insertDb($sql);
-}
-
-function registraAtividadeProjeto($usuario_id, $projeto_id){
-    $sql = "INSERT INTO FeedAtividades(UsuarioID, ProjetoID)
-            VALUES($usuario_id, $projeto_id)";
-
-    return insertDb($sql);
-}
-
+/**
+ * Retorna todas as atividades
+ */
 function getAtividades(){
     $sql = "SELECT *
             FROM FeedAtividades fa";
     
-    return selectDb($sql);
+    return consulta($sql);
 }
 
+/**
+ * Retorna todas as músicas
+ */
 function getMusicas(){
     $sql = "SELECT *
-            FROM Musica";
+            FROM Musica 
+            ORDER BY DataUpload DESC";
 
-    return selectDb($sql);
+    return consulta($sql);
 }
 
+/**
+ * Retorna uma música pelo seu id
+ */
 function getMusicaPeloId($musica_id){
     $sql = "SELECT *
             FROM Musica
-            WHERE ID = $musica_id
+            WHERE ID = ? 
             LIMIT 1";
 
-    return selectDb($sql)[0];
+    return consulta($sql, [$musica_id])[0];
 }
 
 /**
@@ -256,9 +236,12 @@ function getAtividadesDasConexoes($usuario_id){
     $sql .= ")
             ORDER BY DataAtividade DESC";
     
-    return selectDb($sql);
+    return consulta($sql);
 }
 
+/**
+ * Retorna todas as conexões de um músico
+ */
 function getMusicosConexoes($usuario_id){
     $conexoes = getConexoes($usuario_id);
     $musicos = getMusicos();
@@ -272,4 +255,46 @@ function getMusicosConexoes($usuario_id){
     }
 
     return $musicos;
+}
+
+/**
+ * Retorna a quantidade de músicas do músico
+ */
+function getQuantidadeMusicas($musico_id){
+    $sql = "SELECT COUNT(m.ID) AS quantidade
+            FROM Musica m
+            WHERE m.Artista = ?";
+
+    return consulta($sql, [$musico_id])[0]['quantidade'];
+}
+
+/**
+ * Retorna a quantidade de conexões do músico
+ */
+function getQuantidadeConexoes($musico_id){
+    $sql = "SELECT COUNT(m.ID) AS quantidade
+            FROM Conexao c
+            WHERE c.UsuarioOrigemID = ?";
+
+    return consulta($sql, [$musico_id])[0]['quantidade'];
+}
+
+/**
+ * Retorna a quantidade de projetos do músico
+ */
+function getQuantidadeProjetos($musico_id){
+    $sql = "SELECT COUNT(m.ID) AS quantidade
+            FROM Musica m
+            WHERE m.Artista = ?";
+
+    return consulta($sql, [$musico_id])[0]['quantidade']; 
+}
+
+function getUsuarioLogado(){
+    return $_SESSION['usuario'] ?? false;
+}
+
+function getIdUsuarioLogado(){
+    $usuario = getUsuarioLogado();
+    return $usuario['id'] ?? false;
 }

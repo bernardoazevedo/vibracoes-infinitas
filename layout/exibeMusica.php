@@ -1,8 +1,9 @@
 <div class="card">
-    <div class="card-header">
-        <img src="public/fotos/<?= $usuario['FotoPerfil'] ?>" class="rounded-circle" alt="" width="40px" height="40px">
-        <span class="ml-2 fw-bold"><?=$usuario['NomeUsuario']?></span><span> compartilhou uma nova música</span>
-        <span class="fs-6 position-absolute end-0 text-body-tertiary mr-3"><?= $data ?></span>
+    <div class="card-header d-flex">
+        <img src="public/fotos/<?= $usuario['FotoPerfil'] ?>" class="rounded" alt="" width="48px" height="48px">
+        <span class="align-self-center ml-2 mr-1 fw-bold"><?=$usuario['NomeUsuario']?></span>
+        <span class="align-self-center flex-fill text-truncate"> compartilhou uma nova música</span>
+        <span class="align-self-center fs-6 text-body-tertiary text-end"><?= $data ?></span>
     </div>
     <div class="card-body">
         <div class="mb-2">
