@@ -13,7 +13,6 @@ $usuarioAtivoId = $usuarioAtivo['id'];
 // se algum campo não foi preenchido, exibe o erro
 if(empty($conexaoId) || empty($usuarioAtivoId)){
     geraMensagem('Não foi possível desfazer conexão');
-    mysqli_close($connect);
     echo json_encode(false);
     return;
 }

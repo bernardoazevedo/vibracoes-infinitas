@@ -29,7 +29,7 @@ $usuario = getMusicoPeloId($usuarioAtivo['id']);
             <div class="card-body">
                 <p class="login-box-msg">Edite as informações do seu perfil</p>
 
-                <form action="../actions/register.php" method="post" enctype="multipart/form-data">
+                <form action="../actions/editarPerfil.php" method="post" enctype="multipart/form-data">
                     <label for="nome" class="mb-0">Nome</label>
                     <div class="input-group mb-3">
                         <input id="nome" name="nome" type="text" class="form-control" placeholder="Nome completo" value="<?= $usuario['Nome'] ?>" autofocus>

@@ -36,18 +36,13 @@ $quantidadeConexoes = getQuantidadeConexoes($usuario['ID']);
                 
                 <div class="card">
                     <div class="card-header">
-
-                    </div>
-
-                    <div class="card-body container">
-
                         <div class="col">
                             <div class="media align-items-end ">
                                 <div class="mr-3">
                                     <img src="public/fotos/<?= $usuario['FotoPerfil'] ?>"
                                         alt="..." width="120px" height="120px" class="rounded mb-2 img-thumbnail">
-                                    <a href="#" class="btn btn-outline-dark btn-sm btn-block">
-                                        Edit profile
+                                    <a href="editarPerfil.php" class="btn btn-outline-dark btn-sm btn-block">
+                                        Editar perfil
                                     </a>
                                 </div>
                                 <div class="media-body mb-5 ">
@@ -56,7 +51,11 @@ $quantidadeConexoes = getQuantidadeConexoes($usuario['ID']);
                                 </div>
                             </div>
                         </div>
-                        <div class="col pt-4">
+
+                    </div>
+
+                    <div class="card-body container">
+                        <div class="col">
                             <div class="row">
                                 <div class="col">
                                     <h5 class="font-weight-bold mb-0 d-block"><?= $quantidadeMusicas ?></h5>
@@ -64,32 +63,28 @@ $quantidadeConexoes = getQuantidadeConexoes($usuario['ID']);
                                         <i class="fas fa-image mr-1"></i>Músicas
                                     </small>
                                 </div>
-                                <div class="col justify-content-center">
-                                    <h5 class="font-weight-bold mb-0 d-block text-center">215</h5>
-                                    <small class="text-muted self-align-center"> 
+                                <div class="col">
+                                    <h5 class="font-weight-bold mb-0 d-block"><?= $quantidadeProjetos ?></h5>
+                                    <small class="text-muted"> 
                                         <i class="fas fa-user mr-1"></i>Projetos
                                     </small>
                                 </div>
                                 <div class="col">
-                                    <h5 class="font-weight-bold mb-0 d-block">215</h5>
+                                    <h5 class="font-weight-bold mb-0 d-block"><?= $quantidadeConexoes ?></h5>
                                     <small class="text-muted"> 
                                         <i class="fas fa-user mr-1"></i>Conexões
                                     </small>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="px-4 py-3">
-                            <h5 class="mb-0">Descrição</h5>
-                            <div class="p-4 rounded shadow-sm bg-light">
+                    </div>
+                    
+                    <div class="card-footer">
+                        <div class="">
+                            <div class="p-2">
                                 <p class="font-italic mb-0"><?= $usuario['Descricao'] ?></p>
                             </div>
                         </div>
-
-                    </div>
-
-                    <div class="card-footer">
-                        
                     </div>
                 </div>
 

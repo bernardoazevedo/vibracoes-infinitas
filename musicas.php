@@ -40,7 +40,7 @@ $musicas = getMusicas();
                     <?php require_once('layout/enviarMusica.php') ?>
 
                     <h3 class="mt-4">Músicas</h3>
-                    <?php if(count($musicas)): ?>
+                    <?php if($musicas): ?>
                         <?php foreach($musicas as $musica): ?>
                             <?php 
                                 $dataMusica = new DateTime($musica['DataUpload']);

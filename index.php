@@ -37,7 +37,7 @@ $atividades = getAtividadesDasConexoes($usuarioAtivoId);
 
                     <h3 class="">Atividades</h3>
                     <?php 
-                        if(count($atividades)):
+                        if($atividades):
                             foreach($atividades as $atividade): 
                                 $dataAtividade = new DateTime($atividade['DataAtividade']);
                                 $data = $dataAtividade->format('H:i - d/m/Y');

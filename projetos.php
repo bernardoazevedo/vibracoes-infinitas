@@ -40,7 +40,7 @@ $projetos = getProjetosParticipantes();
                         <h3 class="mt-4">Projetos</h3>
                         
                         <?php
-                        if(count($projetos)):
+                        if($projetos):
                             foreach($projetos as $projeto): 
                                 require('layout/exibeProjeto.php');
                             endforeach;

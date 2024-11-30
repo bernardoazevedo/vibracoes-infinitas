@@ -22,7 +22,7 @@ function geraMensagem($mensagem, $tipo = 'alert'){
  * Faz uma consulta no banco de dados utilizando o conceito de transações
  */
 function consulta($sql, $parametros = null){
-    require_once('db-connect.php');
+    require('db-connect.php');
 
     try{
         $connect = new PDO("mysql:host=$hostname;dbname=$database", $username, $password, [
@@ -273,7 +273,7 @@ function getQuantidadeMusicas($musico_id){
  * Retorna a quantidade de conexões do músico
  */
 function getQuantidadeConexoes($musico_id){
-    $sql = "SELECT COUNT(m.ID) AS quantidade
+    $sql = "SELECT COUNT(c.UsuarioDestinoID) AS quantidade
             FROM Conexao c
             WHERE c.UsuarioOrigemID = ?";
 
@@ -284,9 +284,9 @@ function getQuantidadeConexoes($musico_id){
  * Retorna a quantidade de projetos do músico
  */
 function getQuantidadeProjetos($musico_id){
-    $sql = "SELECT COUNT(m.ID) AS quantidade
-            FROM Musica m
-            WHERE m.Artista = ?";
+    $sql = "SELECT COUNT(pm.ID) AS quantidade
+            FROM ProjetoMusical pm
+            WHERE pm.UsuarioCriadorID = ?";
 
     return consulta($sql, [$musico_id])[0]['quantidade']; 
 }

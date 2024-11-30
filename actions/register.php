@@ -38,14 +38,6 @@ function verificaSenha($senha){
     return $senha;
 }
 
-function limpaInput($mysqli_connect, $string){
-    $sql_escaped = mysqli_escape_string($mysqli_connect, $string);
-    $sql_html_escaped = htmlspecialchars($sql_escaped);
-
-    return $sql_html_escaped;
-}
-
-
 function formatoValido($extensao){
     $formatosValidos = [
         'jpg',
@@ -81,11 +73,10 @@ function uploadFoto($nome, $nomeTemporario, $pasta){
 }
 
 
+session_start();
 
 require_once('db-connect.php');
 require_once('funcoes.php');
-
-session_start();
 
 if(isset($_POST)){
     $nome = verificaNome($_POST['nome']);
@@ -99,82 +90,90 @@ if(isset($_POST)){
     $nomeTempArquivo = $foto['tmp_name'];
     $novoNome = uniqid().".$extensaoFoto";
 
-    $connect = mysqli_connect($hostname, $username, $password, $database); 
-
     //verifica se o formato da foto é aceito
     if(!formatoValido($extensaoFoto)){
-        $mensagem['tipo'] = 'danger';
-        $mensagem['texto'] = "Formato de arquivo ($extensaoFoto) inválido";
-        $_SESSION['mensagens'][] = $mensagem;
-        mysqli_close($connect);
+        geraMensagem("Formato de arquivo ($extensaoFoto) inválido", 'danger');
         header('Location: ../register.php');
         die();
     }
 
     //se algum campo não foi preenchido, exibe o erro
     if(empty($nome) || empty($nomeUsuario) || empty($foto) || empty($descricao) || empty($senha) || empty($confirmaSenha)){
-        $mensagem['tipo'] = 'danger';
-        $mensagem['texto'] = 'Você deve preencher todos os campos';
-        $_SESSION['mensagens'][] = $mensagem;
-        mysqli_close($connect);
+        geraMensagem('Você deve preencher todos os campos', 'danger');
         header('Location: ../register.php');
         die();
     }
     else{  
-        //verifica se o nome de usuário já é usado por outra conta
-        $nomeUsuario = limpaInput($connect, $nomeUsuario);
-        $sql = "SELECT nomeUsuario 
-                FROM Usuario 
-                WHERE nomeUsuario = '$nomeUsuario'";
-        $resultado = mysqli_query($connect, $sql);
-
-        if(mysqli_num_rows($resultado) > 0){
-            $mensagem['tipo'] = 'danger';
-            $mensagem['texto'] = 'Esse nome de usuário já é usado em outra conta';
-            $_SESSION['mensagens'][] = $mensagem;
-            mysqli_close($connect);
-            header('Location: ../register.php');
-            die();
+        // se conecta com o banco de dados
+        try{
+            $connect = new PDO("mysql:host=$hostname;dbname=$database", $username, $password, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+            ]);
         }
-        else{
-            if($senha == $confirmaSenha){       
-                $nome = limpaInput($connect, $nome);
-                $nomeUsuario = limpaInput($connect, $nomeUsuario);
-                $senhaCriptografada = password_hash($senha, PASSWORD_DEFAULT);
+        catch(Exception $e){
+            geraMensagem('Erro ao conectar: '.$e->getMessage(), 'danger');
+        }
+        
+        try{
+            // inicia a transação
+            $connect->beginTransaction();
 
-                $nomeFoto = uploadFoto($novoNome, $nomeTempArquivo, '../public/fotos/');
-
-                if(! $nomeFoto){
-                    $mensagem['tipo'] = 'danger';
-                    $mensagem['texto'] = "Não foi possível fazer o upload da foto";
-                    $_SESSION['mensagens'][] = $mensagem;
-                    
-                    mysqli_close($connect);
-                    header('Location: ../login.php');
-                    die();
-                }
-
-                $sql = "INSERT INTO Usuario (Nome, NomeUsuario, Senha, FotoPerfil, Descricao)
-                        VALUES (?, ?, ?, ?, ?)";
-
-                $stmt = mysqli_prepare($connect, $sql);
-                mysqli_stmt_bind_param($stmt, 'sssss', $nome, $nomeUsuario, $senhaCriptografada, $nomeFoto, $descricao);
-                mysqli_stmt_execute($stmt);
-                $resultado = mysqli_stmt_get_result($stmt);
+            //verifica se o nome de usuário já é usado por outra conta
+            $sql = "SELECT nomeUsuario 
+                    FROM Usuario 
+                    WHERE nomeUsuario = ?";
+            $stmt = $connect->prepare($sql);
+            $stmt->bindParam(1, $nomeUsuario);
+            $stmt->execute();
             
-                mysqli_stmt_close($stmt);
-                mysqli_close($connect);
-                header('Location: ../login.php');
-                die();
-            }
-            else{
-                $mensagem['tipo'] = 'danger';
-                $mensagem['texto'] = 'As senhas não conferem';
-                $_SESSION['mensagens'][] = $mensagem;
-                mysqli_close($connect);
+            if($stmt->rowCount() > 0){
+                $connect->rollback();
+                geraMensagem('Esse nome de usuário já é usado em outra conta', 'danger');
                 header('Location: ../register.php');
                 die();
             }
+            else{
+                if($senha == $confirmaSenha){       
+                    $senhaCriptografada = password_hash($senha, PASSWORD_DEFAULT);
+
+                    $nomeFoto = uploadFoto($novoNome, $nomeTempArquivo, '../public/fotos/');
+
+                    if(! $nomeFoto){
+                        $connect->rollback();
+                        geraMensagem("Não foi possível fazer o upload da foto", 'danger');                    
+                        header('Location: ../login.php');
+                        die();
+                    }
+
+                    $sql = "INSERT INTO Usuario (Nome, NomeUsuario, Senha, FotoPerfil, Descricao)
+                            VALUES (?, ?, ?, ?, ?)";
+                    $stmt = $connect->prepare($sql);
+                    $stmt->bindParam(1, $nome);
+                    $stmt->bindParam(2, $nomeUsuario);
+                    $stmt->bindParam(3, $senhaCriptografada);
+                    $stmt->bindParam(4, $nomeFoto);
+                    $stmt->bindParam(5, $descricao);
+                    $stmt->execute();
+
+                    $connect->commit();
+                    geraMensagem("Conta criada com sucesso", 'success');
+
+                    header('Location: ../login.php');
+                    die();
+                }
+                else{
+                    $connect->rollback();
+                    geraMensagem('As senhas não conferem', 'danger');                    
+                    header('Location: ../register.php');
+                    die();
+                }
+            }
+        }
+        catch(Exception $e){
+            // faz o rollback e exclui a foto que havia sido salva
+            $connect->rollback();
+            unlink("../public/fotos/$novoNome");
+            geraMensagem('Erro ao cadastrar usuário: '.$e->getMessage(), 'danger');
         }
     }
 }
