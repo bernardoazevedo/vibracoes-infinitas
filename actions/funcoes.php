@@ -291,10 +291,16 @@ function getQuantidadeProjetos($musico_id){
     return consulta($sql, [$musico_id])[0]['quantidade']; 
 }
 
+/**
+ * Retorna o usuário logado
+ */
 function getUsuarioLogado(){
     return $_SESSION['usuario'] ?? false;
 }
 
+/**
+ * Retorna o id do usuário logado
+ */
 function getIdUsuarioLogado(){
     $usuario = getUsuarioLogado();
     return $usuario['id'] ?? false;

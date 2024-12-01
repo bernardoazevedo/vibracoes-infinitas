@@ -32,7 +32,9 @@ function verificaEmail($email){
 
 function verificaSenha($senha){
     if(strlen($senha) < 8){
-        return false;
+        geraMensagem('A senha deve possuir mais de 8 caracteres', 'danger');
+        header('Location: ../register.php');
+        die();
     }
 
     return $senha;
@@ -82,13 +84,15 @@ if(isset($_POST)){
     $nome = verificaNome($_POST['nome']);
     $nomeUsuario = verificaNome($_POST['nomeUsuario']);
     $descricao = $_POST['descricao'];
-    $senha = verificaSenha($_POST['senha']);
-    $confirmaSenha = verificaSenha($_POST['confirma-senha']);
+    $senha = $_POST['senha'];
+    $confirmaSenha = $_POST['confirma-senha'];
     
     $foto = $_FILES['fotoPerfil'];
     $extensaoFoto = pathinfo($foto['name'], PATHINFO_EXTENSION);
     $nomeTempArquivo = $foto['tmp_name'];
     $novoNome = uniqid().".$extensaoFoto";
+
+    $senha = verificaSenha($senha);
 
     //verifica se o formato da foto é aceito
     if(!formatoValido($extensaoFoto)){

@@ -32,7 +32,9 @@ function verificaEmail($email){
 
 function verificaSenha($senha){
     if(strlen($senha) < 8){
-        return false;
+        geraMensagem('A senha deve possuir mais de 8 caracteres', 'danger');
+        header('Location: ../editarPerfil.php');
+        die();
     }
 
     return $senha;
