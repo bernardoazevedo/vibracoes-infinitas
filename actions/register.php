@@ -77,8 +77,8 @@ function uploadFoto($nome, $nomeTemporario, $pasta){
 
 session_start();
 
-require_once('db-connect.php');
 require_once('funcoes.php');
+require_once('db-connect.php');
 
 if(isset($_POST)){
     $nome = verificaNome($_POST['nome']);

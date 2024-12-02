@@ -1,7 +1,11 @@
 <?php 
 
+require_once('funcoes.php');
+
+$usuarioAtivo = getUsuarioLogado();
+
 //se o usuário não está logado, direciona para a tela inicial
-if(!isset($_SESSION['usuario']['logado'])){
+if(!isset($usuarioAtivo['logado'])){
     $mensagem['tipo'] = 'danger';
     $mensagem['texto'] = 'Você precisa estar logado para acessar essa página';
     $_SESSION['mensagens'][] = $mensagem;
@@ -9,8 +13,8 @@ if(!isset($_SESSION['usuario']['logado'])){
     die();
 }
 
-if(isset($_SESSION['usuario']['ultima-atividade'])){
-    if(time() > $_SESSION['usuario']['ultima-atividade'] + 60*15){
+if(isset($usuarioAtivo['ultima-atividade'])){
+    if(time() > $usuarioAtivo['ultima-atividade'] + 60*15){
         unset($_SESSION);
         session_unset();
         session_destroy();

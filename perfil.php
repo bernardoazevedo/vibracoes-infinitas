@@ -1,16 +1,20 @@
 <?php 
 session_start();
 
-require_once('actions/controleSessao.php');
 require_once('actions/funcoes.php');
+require_once('actions/controleSessao.php');
 
-$usuarioAtivo = $_SESSION['usuario'];
+$usuarioAtivo = getUsuarioLogado();
 $usuarioAtivoId = $usuarioAtivo['id'];
 $usuario = getMusicoPeloId($usuarioAtivoId);
 
-$quantidadeMusicas = getQuantidadeMusicas($usuario['ID']);
-$quantidadeProjetos = getQuantidadeProjetos($usuario['ID']);
-$quantidadeConexoes = getQuantidadeConexoes($usuario['ID']);
+$conexoes = getConexoes($usuarioAtivoId);
+$musicos = getMusicos();
+$musicosConexoes = getMusicosConexoes($usuarioAtivoId);
+
+$quantidadeMusicas = getQuantidadeMusicas($usuarioAtivoId);
+$quantidadeProjetos = getQuantidadeProjetos($usuarioAtivoId);
+$quantidadeConexoes = getQuantidadeConexoes($usuarioAtivoId);
 ?>
 
 <!DOCTYPE html>

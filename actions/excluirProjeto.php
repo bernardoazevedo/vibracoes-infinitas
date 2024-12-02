@@ -2,10 +2,11 @@
 
 session_start();
 
+require_once('funcoes.php');
 require_once('controleSessao.php');
 
 $projetoId = $_POST['projetoId'];
-$usuarioAtivo = $_SESSION['usuario'];
+$usuarioAtivo = getUsuarioLogado();
 $usuarioAtivoId = $usuarioAtivo['id'];
 
 // se algum campo não foi preenchido, exibe o erro

@@ -2,8 +2,8 @@
 
 session_start();
 
-require_once('controleSessao.php');
 require_once('funcoes.php');
+require_once('controleSessao.php');
 require_once('db-connect.php');
 
 function formatoValido($extensao){
@@ -29,7 +29,7 @@ $genero = trim($_POST['generoMusica']);
 $nomeArmazenado = uniqid().".$extensaoArquivo";
 $arquivo_destino = $pasta_destino.$nomeArmazenado;
 
-$usuarioAtivo = $_SESSION['usuario'];
+$usuarioAtivo = getUsuarioLogado();
 $usuarioAtivoId = $usuarioAtivo['id'];
 
 $uploadOk = 1;
