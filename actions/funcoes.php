@@ -295,7 +295,23 @@ function getQuantidadeProjetos($musico_id){
  * Retorna o usuário logado
  */
 function getUsuarioLogado(){
-    return $_SESSION['usuario'] ?? false;
+    $usuario = $_SESSION['usuario'] ?? false;
+
+    /**
+     * para fazer testes enviando requisições sem estar logado:
+     * comente a primeira linha da função e descomente as linhas abaixo.
+     * insira o id do usuário que irá executar as ações como parâmetro para a função abaixo.
+     */
+    // $usuario = getMusicoPeloId(2);
+    // $usuario['id'] = $usuario['ID'];
+    // $usuario['nome'] = $usuario['Nome'];
+    // $usuario['nomeUsuario'] = $usuario['NomeUsuario'];
+    // $usuario['fotoPerfil'] = $usuario['FotoPerfil'];
+    // $usuario['descricao'] = $usuario['Descricao'];
+    // $usuario['logado'] = true;
+    // $usuario['ultima-atividade'] = time();
+    
+    return $usuario;
 }
 
 /**
