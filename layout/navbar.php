@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top navbar-light bg-light shadow-sm">
     <div class="container-sm">
         <div class="w-auto">
-            <a class="navbar-brand" href="index.php">Vibrações Infinitas</a>
+            <img src="public/logo.png" alt="" width="40px" height="40px">
         </div>
 
         <div class="collapse navbar-collapse" id="navbarTogglerDemo01">

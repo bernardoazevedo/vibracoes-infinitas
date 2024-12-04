@@ -20,7 +20,8 @@ session_start();
         <!-- /.login-logo -->
         <div class="card card-outline card-primary mb-3">
             <div class="card-header text-center">
-                <a href="login.php" class="h1"><b>Vibrações Infinitas</b></a>
+                <img src="public/logo.png" alt="" width="100px" height="100px">
+                <div><a href="login.php" class="h1"><b>Vibrações Infinitas</b></a></div>
             </div>
             <div class="card-body">
                 <p class="login-box-msg">Entre na sua conta</p>

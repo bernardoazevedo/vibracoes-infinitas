@@ -23,9 +23,6 @@ $usuario = getMusicoPeloId($usuarioAtivo['id']);
 <body class="hold-transition register-page">
     <div class="register-box">
         <div class="card card-outline card-primary mb-3">
-            <div class="card-header text-center">
-                <a href="register.php" class="h1"><b>Vibrações Infinitas</b></a>
-            </div>
             <div class="card-body">
                 <p class="login-box-msg">Edite as informações do seu perfil</p>
 
